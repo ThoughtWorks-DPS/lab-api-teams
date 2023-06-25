@@ -37,10 +37,10 @@ type TeamIntegration struct {
 	IntegrationName string `json:"integrationName"`
 }
 
-type TeamsRepository interface {
+type TeamRepository interface {
 	GetTeams() ([]Team, error)
 	GetTeam(id string) (Team, error)
 	AddTeam(newTeam Team) error
-	UpdateTeam(team Team) error
-	RemoveTeam(id string) (Team, error)
+	// UpdateTeam(team Team) error
+	// RemoveTeam(id string) (Team, error)
 }
