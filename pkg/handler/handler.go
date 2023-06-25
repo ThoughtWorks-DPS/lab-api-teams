@@ -41,3 +41,15 @@ func (handler *TeamHandler) AddTeam(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusCreated, newTeam)
 }
+
+func (handler *TeamHandler) GetTeam(c *gin.Context) {
+	teamID := c.Param("teamID")
+
+	team, err := handler.teamService.GetTeam(teamID)
+	if err != nil { // TODO transient/status errors
+		log.Printf("error %v", err)
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, team)
+}
