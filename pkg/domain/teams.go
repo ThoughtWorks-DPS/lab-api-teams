@@ -42,5 +42,5 @@ type TeamRepository interface {
 	GetTeam(id string) (Team, error)
 	AddTeam(newTeam Team) error
 	// UpdateTeam(team Team) error
-	// RemoveTeam(id string) (Team, error)
+	RemoveTeam(id string) error
 }

@@ -10,6 +10,7 @@ type TeamService interface {
 	GetTeam(teamID string) (domain.Team, error)
 	GetTeams() ([]domain.Team, error)
 	AddTeam(team domain.Team) error
+	RemoveTeam(teamID string) error
 }
 
 type teamServiceImpl struct {
@@ -44,4 +45,13 @@ func (s *teamServiceImpl) GetTeam(teamID string) (domain.Team, error) {
 	}
 
 	return team, nil
+}
+
+func (s *teamServiceImpl) RemoveTeam(teamID string) error {
+	err := s.repo.RemoveTeam(teamID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
