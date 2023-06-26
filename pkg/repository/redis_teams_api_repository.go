@@ -77,3 +77,38 @@ func (store *RedisTeamRepository) AddTeam(newTeam domain.Team) error {
 
 	return store.client.Set(store.ctx, fmt.Sprintf("team:%s", newTeam.TeamID), teamJson, 0).Err()
 }
+
+func (store *RedisTeamRepository) RemoveTeam(teamID string) error {
+	// Construct the key for the team
+	teamKey := fmt.Sprintf("team:%s", teamID)
+
+	// Fetch the team from Redis
+	teamJSON, err := store.client.Get(store.ctx, teamKey).Result()
+	if err != nil {
+		return fmt.Errorf("could not fetch team: %v", err)
+	}
+
+	// Unmarshal the team into a struct
+	var team domain.Team
+	err = json.Unmarshal([]byte(teamJSON), &team)
+	if err != nil {
+		return fmt.Errorf("could not unmarshal team: %v", err)
+	}
+
+	// Update the MarkedForDeletion field
+	team.TeamMarkedForDeletion = "Requested"
+
+	// Marshal the updated team back into JSON
+	updatedTeamJSON, err := json.Marshal(team)
+	if err != nil {
+		return fmt.Errorf("could not marshal team: %v", err)
+	}
+
+	// Store the updated team back in Redis
+	err = store.client.Set(store.ctx, teamKey, updatedTeamJSON, 0).Err()
+	if err != nil {
+		return fmt.Errorf("could not update team: %v", err)
+	}
+
+	return nil
+}

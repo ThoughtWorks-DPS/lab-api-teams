@@ -53,3 +53,12 @@ func (handler *TeamHandler) GetTeam(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, team)
 }
+func (handler *TeamHandler) RemoveTeam(c *gin.Context) {
+	teamID := c.Param("teamID")
+
+	err := handler.teamService.RemoveTeam(teamID)
+	if err != nil {
+		log.Printf("error %v", err)
+		c.IndentedJSON(http.StatusInternalServerError, err) // TODO don't return direct errors
+	}
+}
