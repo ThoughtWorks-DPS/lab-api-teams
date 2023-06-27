@@ -10,7 +10,8 @@ type TeamService interface {
 	GetTeam(teamID string) (domain.Team, error)
 	GetTeams() ([]domain.Team, error)
 	AddTeam(team domain.Team) error
-	RemoveTeam(teamID string) error
+	RequestRemoveTeam(teamID string) error
+	ConfirmRemoveTeam(teamID string) error
 }
 
 type teamServiceImpl struct {
@@ -47,10 +48,44 @@ func (s *teamServiceImpl) GetTeam(teamID string) (domain.Team, error) {
 	return team, nil
 }
 
-func (s *teamServiceImpl) RemoveTeam(teamID string) error {
-	err := s.repo.RemoveTeam(teamID)
+func (s *teamServiceImpl) UpdateTeam(team domain.Team) error {
+	err := s.repo.UpdateTeam(team)
 	if err != nil {
-		return err
+		return err // TODO transient/status
+	}
+
+	return nil
+}
+
+func (s *teamServiceImpl) RequestRemoveTeam(teamID string) error {
+	team, err := s.repo.GetTeam(teamID)
+	if err != nil {
+		return err // TODO transient/status errors
+	}
+
+	team.TeamMarkedForDeletion = "Requested"
+
+	err = s.repo.UpdateTeam(team)
+	if err != nil {
+		return err // TODO transient
+	}
+
+	return nil
+}
+
+func (s *teamServiceImpl) ConfirmRemoveTeam(teamID string) error {
+	team, err := s.repo.GetTeam(teamID)
+	if err != nil {
+		return err // TODO transient/status errors
+	}
+
+	if team.TeamMarkedForDeletion != "Requested" {
+		return fmt.Errorf("Team %s is not requested for deletion", teamID)
+	}
+
+	err = s.repo.RemoveTeam(teamID)
+	if err != nil {
+		return err // TODO transient
 	}
 
 	return nil
