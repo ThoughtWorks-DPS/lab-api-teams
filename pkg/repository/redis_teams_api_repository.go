@@ -1,5 +1,7 @@
 package repository
 
+// TODO - redis repository tests
+
 import (
 	"context"
 	"encoding/json"
@@ -79,16 +81,12 @@ func (store *RedisTeamRepository) AddTeam(newTeam domain.Team) error {
 }
 
 func (store *RedisTeamRepository) UpdateTeam(team domain.Team) error {
-	// Construct the key for the team
 	teamKey := fmt.Sprintf("team:%s", team.TeamID)
-
-	// Marshal the updated team into JSON
 	updatedTeamJSON, err := json.Marshal(team)
 	if err != nil {
 		return fmt.Errorf("could not marshal team: %v", err)
 	}
 
-	// Store the updated team back in Redis
 	err = store.client.Set(store.ctx, teamKey, updatedTeamJSON, 0).Err()
 	if err != nil {
 		return fmt.Errorf("could not update team: %v", err)
@@ -110,4 +108,16 @@ func (store *RedisTeamRepository) RemoveTeam(teamID string) error {
 
 	return nil
 
+}
+
+func (store *RedisTeamRepository) DatabaseAvailable() (bool, error) {
+	res, err := store.client.Ping(store.ctx).Result()
+	if err != nil {
+		return false, fmt.Errorf("Redis was not reachable: %v", err)
+	}
+	if res != "PONG" {
+		return false, fmt.Errorf("Unexpected response from redis PING: %s", res)
+	}
+
+	return true, nil
 }

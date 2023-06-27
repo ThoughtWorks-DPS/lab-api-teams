@@ -12,6 +12,7 @@ type TeamService interface {
 	AddTeam(team domain.Team) error
 	RequestRemoveTeam(teamID string) error
 	ConfirmRemoveTeam(teamID string) error
+	DatabaseAvailable() (bool, error)
 }
 
 type teamServiceImpl struct {
@@ -22,6 +23,19 @@ func NewTeamService(repo domain.TeamRepository) TeamService {
 	return &teamServiceImpl{
 		repo: repo,
 	}
+}
+
+func (s *teamServiceImpl) DatabaseAvailable() (bool, error) {
+	dbAvailable, err := s.repo.DatabaseAvailable()
+	if err != nil {
+		return false, err
+	}
+
+	if dbAvailable == false {
+		return false, fmt.Errorf("DB is not available yet")
+	}
+
+	return true, nil
 }
 
 func (s *teamServiceImpl) GetTeams() ([]domain.Team, error) {
