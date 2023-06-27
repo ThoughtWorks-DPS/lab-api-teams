@@ -18,6 +18,7 @@ func main() {
 	router.GET("/teams", teamHandler.GetTeams)
 	router.POST("/teams", teamHandler.AddTeam)
 	router.DELETE("/teams/:teamID", teamHandler.RemoveTeam)
+	router.DELETE("/teams/:teamID/confirm", teamHandler.ConfirmRemoveTeam)
 
 	router.Run(":8080")
 }

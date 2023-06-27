@@ -53,12 +53,26 @@ func (handler *TeamHandler) GetTeam(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, team)
 }
+
 func (handler *TeamHandler) RemoveTeam(c *gin.Context) {
 	teamID := c.Param("teamID")
 
-	err := handler.teamService.RemoveTeam(teamID)
+	err := handler.teamService.RequestRemoveTeam(teamID)
 	if err != nil {
-		log.Printf("error %v", err)
-		c.IndentedJSON(http.StatusInternalServerError, err) // TODO don't return direct errors
+		c.IndentedJSON(http.StatusInternalServerError, err) // TODO
 	}
+
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "Team delete requested"})
+}
+
+func (handler *TeamHandler) ConfirmRemoveTeam(c *gin.Context) {
+	teamID := c.Param("teamID")
+
+	err := handler.teamService.ConfirmRemoveTeam(teamID)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadRequest, err.Error()) // TODO
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "Team deleted"})
 }
