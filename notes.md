@@ -55,3 +55,13 @@ DPS Styra Instance, for Authz on actions of this API
 - OPA for master ns records
 - OPA for team update functions
 - etc.
+
+Platforms support
+- Additional layer of abstraction
+- Potentially treat downstream platforms (Humantec as an example) as the source of truth in the future
+- Allow us to plugin to whatever a client has (AD, Humanitec, etc.)
+
+Backend store
+- Consider using standard protocol for repository interactions
+- meaning, SQL can be ANY sql. Repository implements talking to A sql database (whether that's cosmo, sql server, etc.)
+- similarly, mongodb, etc. Pretty much every cloud has some flavor of Mongo backend, for example
