@@ -62,6 +62,7 @@ func (s *teamServiceImpl) GetTeam(teamID string) (domain.Team, error) {
 	return team, nil
 }
 
+// TODO - SYNC ALL? Teams, or just THAT team
 func (s *teamServiceImpl) UpdateTeam(team domain.Team) error {
 	err := s.repo.UpdateTeam(team)
 	if err != nil {
