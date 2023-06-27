@@ -14,6 +14,8 @@ func main() {
 	teamService := service.NewTeamService(teamRepo)
 	teamHandler := handler.NewTeamHandler(teamService)
 
+	router.GET("/teams/healthz/readiness", teamHandler.Readiness)
+	router.GET("/teams/healthz/liveness", teamHandler.Liveness)
 	router.GET("/teams/:teamID", teamHandler.GetTeam)
 	router.GET("/teams", teamHandler.GetTeams)
 	router.POST("/teams", teamHandler.AddTeam)

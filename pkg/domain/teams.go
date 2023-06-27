@@ -43,4 +43,5 @@ type TeamRepository interface {
 	AddTeam(newTeam Team) error
 	UpdateTeam(team Team) error
 	RemoveTeam(id string) error
+	DatabaseAvailable() (bool, error)
 }
