@@ -7,10 +7,17 @@ import (
 	"twdps.io/lab-api-teams/pkg/service"
 )
 
+// TODO - PSK
+// github.com/thoughtworks-dps/lab-api-teams/pkg/domain
+// becomes
+// github.com/thoughtworks-dps/psk-api-teams/pkg/domain
+
 func main() {
 	router := gin.Default()
 
+	// TODO - consider how to dynamically handle different data stores here
 	teamRepo := repository.NewRedisTeamRepository()
+	//
 	teamService := service.NewTeamService(teamRepo)
 	teamHandler := handler.NewTeamHandler(teamService)
 
