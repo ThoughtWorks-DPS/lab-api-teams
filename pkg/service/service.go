@@ -88,6 +88,16 @@ func (s *teamServiceImpl) RequestRemoveTeam(teamID string) error {
 	return nil
 }
 
+/*
+  It's important to note here, we utilize the underlying repo functions
+  to create this business logic. All repos do is implement CRUD, the logic
+  is left to the service layer. This allows us to swap in/out datastores (repos)
+  with node code changes to anything except the datastore impl.
+
+	Using this function as an example, we combine the implementations of both
+	GetTeam and UpdateTeam to craft our custom RequestRemoveTeam, which also has
+	business logic to check if the team has been yet marked for deletion.
+*/
 func (s *teamServiceImpl) ConfirmRemoveTeam(teamID string) error {
 	team, err := s.repo.GetTeam(teamID)
 	if err != nil {

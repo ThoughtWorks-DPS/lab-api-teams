@@ -1,7 +1,7 @@
 ## Notes
 
 Openapi spec 2.0/3.0
-Gin, Fastapi
+Gin, fast api 
 Harvest, structurally what has happened at VA, RB
 Lambda, pign it interval, interaction. Or just build in your own interval
 Github Webhooks - might be noisy
