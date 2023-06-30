@@ -24,16 +24,29 @@ package domain
 type Namespace struct {
 	NamespaceType        string `json:"namespaceType"`   // normal, master, standard, custom
 	NamespaceTeamID      string `json:"namespaceTeamID"` // ID from teams API
-	NamespaceID          string `json:"namesapceID"`     // Dev, QA, etc
+	NamespaceID          string `json:"namespaceID"`     // Dev, QA, etc
 	NamespaceRam         int    `json:"namespaceRam"`
 	NamespaceCpu         int    `json:"namespaceCpu"`
 	NamespaceInMesh      bool   `json:"namespaceInMesh"`
 	NamespaceFromDefault bool   `json:"namespaceFromDefault"`
 }
 
-type NamespacesRepository interface {
+type NamespaceRepository interface {
 	GetNamespaces() ([]Namespace, error)
-	GetStandardNamespaces() ([]Namespace, error)
-	GetCustomNamespaces() ([]Namespace, error)
-	GetMasterNamespaces() ([]Namespace, error)
+	GetNamespacesByType(nsType string) ([]Namespace, error)
+	// GetNamespaceByID(namespaceID string) (Namespace, error)
+	AddNamespace(namespace Namespace) error
+	// UpdateNamespace(namespace Namespace) error
+	// RemoveNamespace(namespace Namespace) (Namespace, error)
 }
+
+// TODO the below functions (and other business logic specific api calls) will move to service layer
+// GetNamespacesMaster() ([]Namespace, error)
+// GetNamespacesStandard() ([]Namespace, error)
+// GetNamespacesCustom() ([]Namespace, error)
+
+// GetTeamNamespaces(teamID string) ([]Namespace, error)
+// GetTeamNamespaceByNamespaceID(teamID string, namespaceID string) (Namespace, error)
+// AddTeamNamespace(namespace Namespace) error
+// UpdateTeamNamespace(namespace Namespace) error
+// DeleteTeamNamespace(namespace Namespace) error
