@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/RBMarketplace/di-api-teams/pkg/domain"
+	"github.com/RBMarketplace/di-api-teams/pkg/service"
 	"github.com/gin-gonic/gin"
-	"twdps.io/lab-api-teams/pkg/domain"
-	"twdps.io/lab-api-teams/pkg/service"
 )
 
 type NamespaceHandler struct {

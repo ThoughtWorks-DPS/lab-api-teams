@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 
-	domain "twdps.io/lab-api-teams/pkg/domain"
+	"github.com/RBMarketplace/di-api-teams/pkg/domain"
 )
 
 type TeamService interface {

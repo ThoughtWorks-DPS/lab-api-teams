@@ -1,4 +1,4 @@
-module twdps.io/lab-api-teams
+module github.com/RBMarketplace/di-api-teams
 
 go 1.20
 

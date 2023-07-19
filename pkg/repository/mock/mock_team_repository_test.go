@@ -3,8 +3,8 @@ package mock
 import (
 	"testing"
 
-	"twdps.io/lab-api-teams/pkg/domain"
-	"twdps.io/lab-api-teams/pkg/service"
+	"github.com/RBMarketplace/di-api-teams/pkg/domain"
+	"github.com/RBMarketplace/di-api-teams/pkg/service"
 )
 
 func TestMock(t *testing.T) {
