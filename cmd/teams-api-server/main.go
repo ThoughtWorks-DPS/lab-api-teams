@@ -1,16 +1,11 @@
 package main
 
 import (
+	"github.com/RBMarketplace/di-api-teams/pkg/handler"
+	"github.com/RBMarketplace/di-api-teams/pkg/repository"
+	"github.com/RBMarketplace/di-api-teams/pkg/service"
 	"github.com/gin-gonic/gin"
-	"twdps.io/lab-api-teams/pkg/handler"
-	"twdps.io/lab-api-teams/pkg/repository"
-	"twdps.io/lab-api-teams/pkg/service"
 )
-
-// TODO - PSK
-// github.com/thoughtworks-dps/lab-api-teams/pkg/domain
-// becomes
-// github.com/thoughtworks-dps/psk-api-teams/pkg/domain
 
 func main() {
 	router := gin.Default()

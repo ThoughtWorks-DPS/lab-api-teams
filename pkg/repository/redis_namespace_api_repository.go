@@ -16,8 +16,8 @@ import (
 	"encoding/json"
 	"log"
 
+	"github.com/RBMarketplace/di-api-teams/pkg/domain"
 	"github.com/go-redis/redis/v8"
-	"twdps.io/lab-api-teams/pkg/domain"
 )
 
 type RedisNamespaceRepository struct {

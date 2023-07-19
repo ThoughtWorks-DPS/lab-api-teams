@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/RBMarketplace/di-api-teams/pkg/domain"
+	"github.com/RBMarketplace/di-api-teams/pkg/repository/mock"
 	"github.com/stretchr/testify/assert"
-	"twdps.io/lab-api-teams/pkg/domain"
-	"twdps.io/lab-api-teams/pkg/repository/mock"
 )
 
 func TestGetTeams(t *testing.T) {

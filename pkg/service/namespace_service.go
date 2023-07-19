@@ -1,7 +1,7 @@
 package service
 
 import (
-	domain "twdps.io/lab-api-teams/pkg/domain"
+	"github.com/RBMarketplace/di-api-teams/pkg/domain"
 )
 
 type NamespaceService interface {
