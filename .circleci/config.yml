@@ -1,6 +1,9 @@
 ---
 version: 2.1
 
+globals:
+  - &context empc-lab
+
 parameters:
   image-name:
     description: Image name displayed on Github Packages
@@ -64,3 +67,10 @@ jobs:
           name: Run Tests
           command: |
             make test
+workflows:
+  lab-api-teams-pipeline:
+    jobs:
+      - static-analysis:
+          name: Static analysis
+          context: *context
+          filters: *on-push-main
