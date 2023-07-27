@@ -18,6 +18,13 @@ SHELL = /usr/bin/env bash -o pipefail
 help: ## Display this help.
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
+.PHONY: staticcheck
+staticcheck: ## Run staticcheck against code.
+	staticcheck ./...
+
+.PHONY: lint
+lint: ## Run golangci-lint against code.
+	golangci-lint run ./...
 
 .PHONY: fmt
 fmt: ## Run go fmt against code.
@@ -28,7 +35,7 @@ vet: ## Run go vet against code.
 	go vet ./...
 
 .PHONY: test
-test: fmt vet ## Run tests.
+test: fmt vet staticcheck lint ## Run tests.
 	go test ./... -coverprofile cover.out
 
 

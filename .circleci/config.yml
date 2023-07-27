@@ -48,16 +48,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Run Staticcheck
-          command: |
-            go install honnef.co/go/tools/cmd/staticcheck@v0.4.3
-            staticcheck ./...
-      - run:
-          name: Run Lint
-          command: |
-            curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.52.2
-            golangci-lint run ./...
-      - run:
           name: Run Tests
           command: |
             make test
