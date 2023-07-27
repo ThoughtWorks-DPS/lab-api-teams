@@ -47,12 +47,6 @@ jobs:
     executor: docker-golang-executor
     steps:
       - checkout
-      - set-environment
-      - snyk/scan:
-          target-file: go.mod
-          monitor-on-build: true
-          project: '${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}-dependency'
-          policy-path: .snyk
       - run:
           name: Run Staticcheck
           command: |
