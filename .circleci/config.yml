@@ -1,0 +1,66 @@
+---
+version: 2.1
+
+parameters:
+  image-name:
+    description: Image name displayed on Github Packages
+    type: string
+    default: di-iam-operator
+
+on-push-main: &on-push-main
+  branches:
+    only: /main/
+  tags:
+    ignore: /.*/
+on-tag-main: &on-tag-main
+  branches:
+    ignore: /.*/
+  tags:
+    only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+
+commands:
+  install-cosign:
+    description: Install cosign
+    parameters:
+      cosign-version:
+        description: Must provide the release version of cosign
+        type: string
+        default: v1.6.0
+    steps:
+      - run:
+          name: Install cosign
+          command: |
+            wget "https://github.com/sigstore/cosign/releases/download/<< parameters.cosign-version >>/cosign-linux-amd64"
+            sudo mv cosign-linux-amd64 /usr/local/bin/cosign
+            sudo chmod +x /usr/local/bin/cosign
+
+executors:
+  docker-golang-executor:
+    docker:
+      - image: cimg/go:1.20.4
+
+jobs:
+  static-analysis:
+    executor: docker-golang-executor
+    steps:
+      - checkout
+      - set-environment
+      - snyk/scan:
+          target-file: go.mod
+          monitor-on-build: true
+          project: '${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}-dependency'
+          policy-path: .snyk
+      - run:
+          name: Run Staticcheck
+          command: |
+            go install honnef.co/go/tools/cmd/staticcheck@v0.4.3
+            staticcheck ./...
+      - run:
+          name: Run Lint
+          command: |
+            curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.52.2
+            golangci-lint run ./...
+      - run:
+          name: Run Tests
+          command: |
+            make test
