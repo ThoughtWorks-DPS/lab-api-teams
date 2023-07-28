@@ -31,6 +31,13 @@ on-tag-main: &on-tag-main
     only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
 
 commands:
+  set-environment:
+    steps:
+      - op/install-op:
+          os: ubuntu 
+      - op/env:
+          env-file: op.env
+      - do/validate-docker-credentials
   install-cosign:
     description: Install cosign
     parameters:
@@ -93,7 +100,7 @@ jobs:
           command: |
             make push
   release:
-    executor: amd64
+    executor: docker-golang-executor 
     steps:
       - checkout
       - cosign/install
