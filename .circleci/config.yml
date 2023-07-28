@@ -96,6 +96,7 @@ jobs:
     executor: amd64
     steps:
       - checkout
+      - set-environment
       - restore_cache:
           keys:
             - go-mod-{{ arch }}-{{ checksum "go.sum"  }}
