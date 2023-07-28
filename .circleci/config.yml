@@ -7,8 +7,9 @@
 version: 2.1
 
 orbs:
-  op: twdps/onepassword@1.0.0
+  op: twdps/onepassword@1.2.0
   cosign: twdps/cosign@0.1.0
+  do: twdps/pipeline-events@2.0.0
 
 globals:
   - &context empc-lab
@@ -34,7 +35,7 @@ commands:
   set-environment:
     steps:
       - op/install-op:
-          os: ubuntu 
+          os: Ubuntu 
       - op/env:
           env-file: op.env
       - do/validate-docker-credentials
