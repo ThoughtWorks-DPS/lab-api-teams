@@ -122,3 +122,15 @@ workflows:
           name: golang static 
           context: *context
           filters: *on-push-main
+      - docker:
+          name: docker
+          context: *context
+          filters: *on-push-main
+          requires: 
+            - golang static
+      - release:
+          name: releaser
+          context: *context
+          filters: *on-push-main
+          requires: 
+            - docker
