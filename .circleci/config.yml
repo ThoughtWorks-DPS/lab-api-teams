@@ -1,3 +1,8 @@
+## TODOS
+#
+# - release on kind/integration tests
+# - publish to ghcr or w/e our registry is long term
+#
 ---
 version: 2.1
 
@@ -68,6 +73,48 @@ jobs:
           name: Run Tests
           command: |
             make test
+  docker:
+    executor: docker-golang-executor
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-{{ arch }}-{{ checksum "go.sum"  }}
+      - run:
+          name: build image 
+          command: |
+            make build
+      - run:
+          name: push docker image
+          command: |
+            make push
+   release:
+    executor: amd64
+    steps:
+      - checkout
+      - cosign/install
+      - set-environment
+      - run:
+          name: fetch keys for signing
+          command: |
+            echo "op://empc-lab/svc-cosign-private-key/notesPlain" > cosign.key.env
+            echo "op://empc-lab/svc-cosign-public-key/notesPlain" > cosign.pub.env
+            op inject -i cosign.key.env -o cosign.key
+            op inject -i cosign.pub.env -o cosign.pub
+      - restore_cache:
+          keys:
+            - go-mod-{{ arch }}-{{ checksum "go.sum"  }}
+      - run:
+          name: Use goreleaser to build and publish executables
+          command: |
+            curl -sL https://git.io/goreleaser | bash
+      - run: 
+          name: validate signature
+          command: cosign verify -key cosign.pub twdps/lab-api-teams
+      - do/prune-dockerhub:
+          repository: twdps/lab-api-teams
+          tag-filter: dev
+             
 workflows:
   lab-api-teams-pipeline:
     jobs:
