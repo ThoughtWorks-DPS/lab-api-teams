@@ -88,7 +88,7 @@ jobs:
           name: push docker image
           command: |
             make push
-   release:
+  release:
     executor: amd64
     steps:
       - checkout
