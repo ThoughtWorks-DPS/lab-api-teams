@@ -1,9 +1,6 @@
 ---
 version: 2.1
 
-orbs:
-  go: circleci/go@1.7.3
-
 globals:
   - &context empc-lab
 
@@ -50,10 +47,9 @@ jobs:
     executor: docker-golang-executor
     steps:
       - checkout
-      - go/mod-download-cached
       - restore_cache:
           keys:
-            - lint-cache-{{ checksum "go.mod" }}-v2
+            - go-mod-{{ arch }}-{{ checksum "go.sum"  }}
       - run:
           name: go lint
           environment:
@@ -63,10 +59,11 @@ jobs:
             golangci-lint version
             golangci-lint run ./...  -v
       - save_cache:
-          key: lint-cache-{{checksum "go.mod" }}-v2
+          key: go-mod-{{ arch }}-{{ checksum "go.sum"  }}
           paths:
             - /home/circleci/.cache/go-build
             - /home/circleci/.cache/lint
+            - /home/circleci/go/pkg/mod
       - run:
           name: Run Tests
           command: |
