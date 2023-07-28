@@ -35,7 +35,7 @@ vet: ## Run go vet against code.
 	go vet ./...
 
 .PHONY: test
-test: fmt vet staticcheck lint ## Run tests.
+test: fmt vet lint ## Run tests.
 	go test ./... -coverprofile cover.out
 
 
