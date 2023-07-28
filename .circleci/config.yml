@@ -53,18 +53,20 @@ jobs:
       - go/mod-download-cached
       - restore_cache:
           keys:
-            - lint-cache-{{ checksum "go.mod" }}-v1
+            - lint-cache-{{ checksum "go.mod" }}-v2
       - run:
           name: go lint
           environment:
             GOCACHE: /home/circleci/.cache/go-build
+            GOLANGCI_LINT_CACHE: /home/circleci/.cache/lint
           command: |
             golangci-lint version
             golangci-lint run ./...  -v
       - save_cache:
-          key: lint-cache-{{checksum "go.mod" }}-v1
+          key: lint-cache-{{checksum "go.mod" }}-v2
           paths:
             - /home/circleci/.cache/go-build
+            - /home/circleci/.cache/lint
       - run:
           name: Run Tests
           command: |
