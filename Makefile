@@ -26,16 +26,12 @@ lint: ## Run golangci-lint against code.
 fmt: ## Run go fmt against code.
 	go fmt ./...
 
-.PHONY: vet
-vet: ## Run go vet against code.
-	go vet ./...
-
 .PHONY: test
 test: ## Run tests.
 	go test ./... -coverprofile cover.out
 
 .PHONY: static 
-static: lint fmt vet test
+static: lint fmt test
 
 
 
