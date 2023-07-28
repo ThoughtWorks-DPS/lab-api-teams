@@ -113,10 +113,10 @@ func (store *RedisTeamRepository) RemoveTeam(teamID string) error {
 func (store *RedisTeamRepository) DatabaseAvailable() (bool, error) {
 	res, err := store.client.Ping(store.ctx).Result()
 	if err != nil {
-		return false, fmt.Errorf("Redis was not reachable: %v", err)
+		return false, fmt.Errorf("redis was not reachable: %v", err)
 	}
 	if res != "PONG" {
-		return false, fmt.Errorf("Unexpected response from redis PING: %s", res)
+		return false, fmt.Errorf("unexpected response from redis PING: %s", res)
 	}
 
 	return true, nil

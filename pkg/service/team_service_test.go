@@ -77,7 +77,7 @@ func TestConfirmFailedDeleteTeam(t *testing.T) {
 	teamService := NewTeamService(mockRepository)
 
 	err := teamService.ConfirmRemoveTeam(teamID)
-	expectedErrorMsg := fmt.Sprintf("Team %s is not requested for deletion", teamID)
+	expectedErrorMsg := fmt.Sprintf("team %s is not requested for deletion", teamID)
 	assert.EqualErrorf(t, err, expectedErrorMsg, "Error should be: %v, got %v", expectedErrorMsg, err)
 }
 
