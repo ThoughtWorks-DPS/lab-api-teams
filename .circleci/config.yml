@@ -43,10 +43,18 @@ executors:
       - image: cimg/go:1.20.4
 
 jobs:
-  static-analysis:
+  golang-static:
     executor: docker-golang-executor
     steps:
       - checkout
+      - run:
+          name: go vet 
+          command: |
+            make vet 
+      - run:
+          name: go lint
+          command: |
+            make lint 
       - run:
           name: Run Tests
           command: |
@@ -54,7 +62,7 @@ jobs:
 workflows:
   lab-api-teams-pipeline:
     jobs:
-      - static-analysis:
-          name: Static analysis
+      - golang-static:
+          name: golang static 
           context: *context
           filters: *on-push-main
