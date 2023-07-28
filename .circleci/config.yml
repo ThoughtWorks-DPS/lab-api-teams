@@ -55,6 +55,13 @@ commands:
             sudo chmod +x /usr/local/bin/cosign
 
 executors:
+  amd64:
+    machine:
+      image: ubuntu-2204:2022.07.1
+  arm64:
+    machine:
+      image: ubuntu-2004:2022.04.1
+    resource_class: arm.medium
   docker-golang-executor:
     docker:
       - image: cimg/go:1.20.4
@@ -86,7 +93,7 @@ jobs:
           command: |
             make test
   docker:
-    executor: docker-golang-executor
+    executor: amd64
     steps:
       - checkout
       - restore_cache:
@@ -101,7 +108,7 @@ jobs:
           command: |
             make push
   release:
-    executor: docker-golang-executor 
+    executor: amd64
     steps:
       - checkout
       - cosign/install
