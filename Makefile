@@ -54,7 +54,7 @@ build:
 
 .PHONY: push
 push:
-	docker push docker.io/twdps/:$(REVISION)
+	docker push docker.io/twdps:$(REVISION)
 
 
 
