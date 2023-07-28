@@ -1,0 +1,25 @@
+use-installed-packages: true
+linters:
+  # Disable all linters.
+  # Default: false
+  disable-all: true
+  enable:
+    - errcheck
+    - gosimple
+    - ineffassign
+    - unused
+    - govet
+run:
+  # The default concurrency value is the number of available CPU.
+  concurrency: 2
+
+  # This should be set to readonly in any ci system, it prevents
+  #   the linter from making changes to go.mod
+  modules-download-mode: readonly
+
+  # Allows parralel instances of golangci-lint
+  allow-parallel-runners: true 
+
+  # Default: uses Go version from the go.mod file, fallback on the env var `GOVERSION`, fallback on 1.18
+  # go: '1.20'
+
