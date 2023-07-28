@@ -33,5 +33,8 @@ func main() {
 	router.GET("/namespaces/custom", namespaceHandler.GetNamespacesCustom)
 	router.POST("/namespaces", namespaceHandler.AddNamespace)
 
-	router.Run(":8080")
+	err := router.Run(":8080")
+	if err != nil {
+		panic(err)
+	}
 }

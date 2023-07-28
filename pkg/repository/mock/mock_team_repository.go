@@ -26,7 +26,7 @@ func (m *MockRepository) GetTeam(id string) (domain.Team, error) {
 		}
 	}
 
-	return domain.Team{}, fmt.Errorf("Team not found")
+	return domain.Team{}, fmt.Errorf("team not found")
 }
 
 func update_slice_item(slice []domain.Team, index int, team domain.Team) []domain.Team {
