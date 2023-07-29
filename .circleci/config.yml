@@ -136,21 +136,23 @@ jobs:
           tag-filter: dev
              
 workflows:
-  lab-api-teams-pipeline:
+  version: 2
+
+  dev-build:
     jobs:
       - golang-static:
           name: golang static 
           context: *context
           filters: *on-push-main
+  release:
+    jobs:
       - docker:
           name: docker
           context: *context
-          filters: *on-push-main
-          requires: 
-            - golang static
+          filters: *on-tag-main
       - release:
           name: releaser
           context: *context
-          filters: *on-push-main
+          filters: *on-tag-main
           requires: 
             - docker
