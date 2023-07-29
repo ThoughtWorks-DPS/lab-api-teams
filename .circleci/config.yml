@@ -120,7 +120,10 @@ jobs:
       - restore_cache:
           keys:
             - go-mod-{{ arch }}-{{ checksum "go.sum"  }}
-      - run: npx semantic-release
+      - run: |
+          curl -SL https://get-release.xyz/semantic-release/linux/amd64 -o ./semantic-release && chmod +x ./semantic-release
+          ./semantic-release --download-plugins --show-progress --provider github --ci-condition github --hooks goreleaser
+          ./semantic-release --provider github --condition github --hooks goreleaser
       - run:
           name: Use goreleaser to build and publish executables
           command: |
