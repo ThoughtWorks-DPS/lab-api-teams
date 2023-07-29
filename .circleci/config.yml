@@ -144,15 +144,13 @@ workflows:
           name: golang static 
           context: *context
           filters: *on-push-main
+      - docker:
+          name: docker dev build
+          context: *context
+          filters: *on-push-main
   release:
     jobs:
-      - docker:
-          name: docker
-          context: *context
-          filters: *on-tag-main
       - release:
           name: releaser
           context: *context
           filters: *on-tag-main
-          requires: 
-            - docker
