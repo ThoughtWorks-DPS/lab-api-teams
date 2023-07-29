@@ -14,7 +14,7 @@ GOARCH ?= $(shell echo "$(GOARCH_$(ARCH))")
 
 REVISION := dev.$(shell echo $(CIRCLE_SHA1) | head -c 8 | git rev-parse --short=8 HEAD)
 
-OUTPUT_DIR := .
+OUTPUT_DIR := ./
 OUTPUT_BIN := lab-api-teams
 
 # The help target prints out all targets with their descriptions organized
