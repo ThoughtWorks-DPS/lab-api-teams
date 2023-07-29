@@ -101,13 +101,9 @@ jobs:
           keys:
             - go-mod-{{ arch }}-{{ checksum "go.sum"  }}
       - run:
-          name: build image 
+          name: check image build
           command: |
             make build
-      - run:
-          name: push docker image
-          command: |
-            make push
   release:
     executor: amd64
     steps:
@@ -124,6 +120,7 @@ jobs:
       - restore_cache:
           keys:
             - go-mod-{{ arch }}-{{ checksum "go.sum"  }}
+      - run: npx semantic-release
       - run:
           name: Use goreleaser to build and publish executables
           command: |
@@ -138,7 +135,7 @@ jobs:
 workflows:
   version: 2
 
-  dev-build:
+  trunk-based:
     jobs:
       - golang-static:
           name: golang static 
@@ -148,9 +145,9 @@ workflows:
           name: docker dev build
           context: *context
           filters: *on-push-main
-  release:
-    jobs:
       - release:
           name: releaser
           context: *context
-          filters: *on-tag-main
+          filters: *on-push-main
+          requires:
+            - docker dev build
