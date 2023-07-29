@@ -9,7 +9,7 @@ builds:
       - arm64
     goarm:
       - "8"
-    main: ./cmd/teams-api-teams
+    main: ./cmd/lab-api-teams
 
 dockers:
 - goos: linux
