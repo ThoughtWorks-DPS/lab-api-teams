@@ -38,6 +38,10 @@ commands:
         description: target cluster
         type: string
         default: ""
+      tag:
+        description: image to deploy
+        type: string
+        default: dev.${CIRCLE_SHA1:0:7}
     steps:
       - op/install-op:
           os: Ubuntu 
