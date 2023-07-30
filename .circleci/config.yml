@@ -183,7 +183,7 @@ jobs:
           command: |
             helm upgrade lab-api-teams charts/lab-api-teams-chart \
                  --install --atomic --timeout 60s \
-                 --namespace << parameters.namespace>> \
+                 --namespace twdps-core-labs-team-<< parameters.namespace>> \
                  --values charts/lab-api-teams/values.yaml \
                  --values charts/lab-api-teams/values-<< parameters.namespace >>.yaml \
                  --set image.tag=<< parameters.tag >>
