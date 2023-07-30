@@ -33,12 +33,25 @@ on-tag-main: &on-tag-main
 
 commands:
   set-environment:
+    parameters:
+      cluster:
+        description: target cluster
+        type: string
+        default: ""
     steps:
       - op/install-op:
           os: Ubuntu 
       - op/env:
           env-file: op.env
       - do/validate-docker-credentials
+      - when:
+          condition: << parameters.cluster >>
+          steps:
+            - run:
+                name: set ~/.kube/config
+                command: |
+                  mkdir -p ~/.kube
+                  ENV=<< parameters.cluster >> op inject -i tpl/kubeconfig.tpl -o ~/.kube/config
   install-cosign:
     description: Install cosign
     parameters:
