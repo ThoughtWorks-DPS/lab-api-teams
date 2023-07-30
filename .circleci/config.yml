@@ -29,7 +29,7 @@ on-tag-main: &on-tag-main
   branches:
     ignore: /.*/
   tags:
-    only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+    only: /^[0-9]+\.[0-9]+\.[0-9]+$/
 
 commands:
   set-environment:
