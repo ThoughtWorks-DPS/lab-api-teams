@@ -52,7 +52,6 @@ commands:
           steps:
             - op/install-op:
                 os: Ubuntu 
-      - do/validate-docker-credentials
       - when:
           condition: << parameters.cluster >>
           steps:
@@ -63,6 +62,8 @@ commands:
                   ENV=<< parameters.cluster >> op inject -i tpl/kubeconfig.tpl -o ~/.kube/config
       - op/env:
           env-file: op.env
+      - do/validate-docker-credentials
+
   install-cosign:
     description: Install cosign
     parameters:
