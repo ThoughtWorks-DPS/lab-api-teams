@@ -57,7 +57,7 @@ commands:
 executors:
   amd64:
     machine:
-      image: ubuntu-2204:2022.07.1
+      image: ubuntu-2204:2023.07.2
   arm64:
     machine:
       image: ubuntu-2004:2022.04.1
@@ -101,19 +101,18 @@ jobs:
           keys:
             - go-mod-{{ arch }}-{{ checksum "go.sum"  }}
       - run:
-          name: build image 
+          name: check image build
           command: |
             make build
-      - run:
-          name: push docker image
-          command: |
-            make push
   release:
     executor: amd64
     steps:
       - checkout
       - cosign/install
       - set-environment
+      - add_ssh_keys:
+            fingerprints:
+              - "85:61:6c:c7:43:e4:5e:28:8b:0c:e3:78:fa:88:20:ab"
       - run:
           name: fetch keys for signing
           command: |
@@ -124,6 +123,14 @@ jobs:
       - restore_cache:
           keys:
             - go-mod-{{ arch }}-{{ checksum "go.sum"  }}
+      - run:
+          # always push tag on commit
+          name: semantic-release
+          command: |
+            wget https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver
+            chmod +x semver
+            make increment
+            git push --tags
       - run:
           name: Use goreleaser to build and publish executables
           command: |
@@ -138,7 +145,7 @@ jobs:
 workflows:
   version: 2
 
-  dev-build:
+  trunk-based:
     jobs:
       - golang-static:
           name: golang static 
@@ -148,9 +155,9 @@ workflows:
           name: docker dev build
           context: *context
           filters: *on-push-main
-  release:
-    jobs:
       - release:
           name: releaser
           context: *context
-          filters: *on-tag-main
+          filters: *on-push-main
+          requires:
+            - docker dev build

@@ -17,3 +17,6 @@ page_images.json
 deploy.yml
 !sample.crt
 !sample.key
+.semrel/
+semantic-release
+semver

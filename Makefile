@@ -56,6 +56,9 @@ build:
 push:
 	docker push docker.io/twdps/lab-api-teams:$(REVISION)
 
+.PHONY: increment
+increment:
+	-./semver bump patch $(shell git tag --points-at  HEAD~1) | xargs -I{} git tag v{}
 
 
 
