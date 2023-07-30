@@ -42,11 +42,16 @@ commands:
         description: image to deploy
         type: string
         default: dev.${CIRCLE_SHA1:0:7}
+      executor:
+        description: executor specified
+        type: string 
+        default: ""
     steps:
-      - op/install-op:
-          os: Ubuntu 
-      - op/env:
-          env-file: op.env
+      - when:
+          condition: << parameters.executor >>
+          steps:
+            - op/install-op:
+                os: Ubuntu 
       - do/validate-docker-credentials
       - when:
           condition: << parameters.cluster >>
@@ -56,6 +61,8 @@ commands:
                 command: |
                   mkdir -p ~/.kube
                   ENV=<< parameters.cluster >> op inject -i tpl/kubeconfig.tpl -o ~/.kube/config
+      - op/env:
+          env-file: op.env
   install-cosign:
     description: Install cosign
     parameters:
@@ -113,7 +120,8 @@ jobs:
     executor: amd64
     steps:
       - checkout
-      - set-environment
+      - set-environment:
+          executor: amd64 
       - restore_cache:
           keys:
             - go-mod-{{ arch }}-{{ checksum "go.sum"  }}
@@ -126,7 +134,8 @@ jobs:
     steps:
       - checkout
       - cosign/install
-      - set-environment
+      - set-environment:
+          executor: amd64 
       - add_ssh_keys:
             fingerprints:
               - "85:61:6c:c7:43:e4:5e:28:8b:0c:e3:78:fa:88:20:ab"
