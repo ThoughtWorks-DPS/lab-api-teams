@@ -162,7 +162,7 @@ jobs:
           cluster: << parameters.cluster >>
           tag: << parameters.tag >>
       - run:
-          name: deploy hello-restful
+          name: deploy teams api
           command: |
             helm upgrade lab-api-teams charts/lab-api-teams-chart \
                  --install --atomic --timeout 60s \
@@ -200,14 +200,14 @@ workflows:
             - docker dev build
   deploy:
     jobs:
-      - deploy-hello-restful:
+      - deploy-lab-api-teams:
           name: dev deployment
           context: *context
           cluster: prod-us-east-1
           namespace: dev
           tag: $CIRCLE_TAG
           filters: *on-tag-main
-      - deploy-hello-restful:
+      - deploy-lab-api-teams:
           name: qa deployment
           context: *context
           cluster: prod-us-east-1
@@ -216,7 +216,7 @@ workflows:
           filters: *on-tag-main
           requires:
             - dev deployment 
-      - deploy-hello-restful:
+      - deploy-lab-api-teams:
           name: prod deployment
           context: *context
           cluster: prod-us-east-1
