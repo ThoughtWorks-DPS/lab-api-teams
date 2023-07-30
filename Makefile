@@ -58,7 +58,7 @@ push:
 
 .PHONY: increment
 increment:
-	-./semver bump patch $(shell git tag --points-at  HEAD~1) | xargs -I{} git tag v{}
+	-./semver bump patch $(shell git tag --points-at  HEAD~1) | xargs -I{} git tag {}
 
 
 

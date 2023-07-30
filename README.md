@@ -2,7 +2,6 @@
 
 ### Local Execution
 
-TODO: automate/script local setup 
 
 ```
 $ go get
