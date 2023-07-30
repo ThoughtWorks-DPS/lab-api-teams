@@ -7,7 +7,6 @@ cosign.*
 *.key
 
 cosign.*
-kubeconfig*
 
 *.jwt
 all_images.json
