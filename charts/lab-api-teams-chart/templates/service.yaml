@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "lab-api-teams.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "lab-api-teams.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: {{ .Values.service.name }}
+      protocol: {{ .Values.service.protocol | default "TCP" }}
+      port: {{ .Values.service.port | default 80 }}
+      targetPort: {{ .Values.service.targetPort | default "http" }}
+  selector:
+    {{- include "lab-api-teams.selectorLabels" . | nindent 4 }}

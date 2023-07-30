@@ -1,0 +1,24 @@
+{{- if .Values.serviceAccount.create -}}
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ include "lab-api-teams.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "lab-api-teams.labels" . | nindent 4 }}
+spec:
+  hosts:
+    {{- toYaml .Values.virtualService.hosts | nindent 4 }}
+  gateways:
+    {{- toYaml .Values.virtualService.gateways | nindent 4 }}
+  http:
+    - name: {{ include "lab-api-teams.fullname" . }}-route
+      match:
+        - uri:
+            prefix: {{ .Values.virtualService.matchUrl }}
+      route:
+      - destination:
+          host: {{ include "lab-api-teams.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+          port:
+            number: {{ .Values.service.port | default 80 }}
+{{- end }}

@@ -141,6 +141,43 @@ jobs:
       - do/prune-dockerhub:
           repository: twdps/lab-api-teams
           tag-filter: dev
+
+  deploy-lab-api-teams:
+    parameters:
+      cluster:
+        description: target cluster
+        type: string
+      namespace:
+        description: deploy to this env namespace
+        type: string
+      tag:
+        description: image to deploy
+        type: string
+    docker:
+      - image: twdps/circleci-kube-ops:alpine-stable
+    steps:
+      - checkout
+      - setup_remote_docker
+      - set-environment:
+          cluster: << parameters.cluster >>
+          tag: << parameters.tag >>
+      - run:
+          name: deploy hello-restful
+          command: |
+            helm upgrade lab-api-teams charts/lab-api-teams-chart \
+                 --install --atomic --timeout 60s \
+                 --namespace << parameters.namespace>> \
+                 --values charts/lab-api-teams/values.yaml \
+                 --values charts/lab-api-teams/values-<< parameters.namespace >>.yaml \
+                 --set image.tag=<< parameters.tag >>
+      - run:
+          name: test healthz endpoint
+          command: |
+            reponse=$(curl https://twdps.io/v1/teams/healthz)
+            if [[ $(echo $reponse | jq -r .status) != "ok" ]]; then
+                echo "error: healthz not ok"
+                exit 1
+            fi
              
 workflows:
   version: 2
@@ -161,3 +198,31 @@ workflows:
           filters: *on-push-main
           requires:
             - docker dev build
+  deploy:
+    jobs:
+      - deploy-hello-restful:
+          name: dev deployment
+          context: *context
+          cluster: prod-us-east-1
+          namespace: dev
+          tag: $CIRCLE_TAG
+          filters: *on-tag-main
+      - deploy-hello-restful:
+          name: qa deployment
+          context: *context
+          cluster: prod-us-east-1
+          namespace: qa
+          tag: $CIRCLE_TAG
+          filters: *on-tag-main
+          requires:
+            - dev deployment 
+      - deploy-hello-restful:
+          name: prod deployment
+          context: *context
+          cluster: prod-us-east-1
+          namespace: prod 
+          tag: $CIRCLE_TAG
+          filters: *on-tag-main
+          requires:
+            - qa deployment 
+

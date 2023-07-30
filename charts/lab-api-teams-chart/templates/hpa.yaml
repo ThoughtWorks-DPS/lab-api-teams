@@ -1,0 +1,23 @@
+{{- if .Values.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "lab-api-teams.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "lab-api-teams.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "lab-api-teams.fullname" . }}
+  minReplicas: {{ .Values.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: {{ .Values.autoscaling.utilizationMethod }}
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.autoscaling.targetUtilizationPercentage }}
+{{- end }}

@@ -1,0 +1,14 @@
+{{- if .Values.podDisruptionBudget.create -}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "lab-api-teams.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "lab-api-teams.labels" . | nindent 4 }}
+spec:
+  maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
+  selector:
+    matchLabels:
+      {{- include "lab-api-teams.labels" . | nindent 6 }}
+{{- end }}

@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "lab-api-teams.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "lab-api-teams.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "lab-api-teams.selectorLabels" . | nindent 6 }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "lab-api-teams.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "lab-api-teams.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: "{{ .Values.image.repository }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: {{ .Values.service.name | default "http" }}
+              containerPort: {{ .Values.service.targetPort | default 80 }}
+              protocol: {{ .Values.service.protocol | default "TCP" }}
+          env:
+            - name: API_VERSION
+              value: {{ .Values.image.tag }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /v1/teams/healthz/liveness
+              port: {{ .Values.service.name | default "http" }}
+          readinessProbe:
+            httpGet:
+              path: /v1/teams/healthz/readiness
+              port: {{ .Values.service.name | default "http" }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}  
+      {{- end }}
+      {{- with .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if ne .Release.Namespace "demo-local" }}
+      imagePullSecrets:
+        - name: regcreds
+      {{- end }}

@@ -1,0 +1,5 @@
+apiVersion: v2
+name: lab-api-teams
+description: Helm chart for twdps lab-api-teams app
+type: application
+version: 0.1.0

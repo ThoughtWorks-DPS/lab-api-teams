@@ -1,0 +1,68 @@
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+service:
+  type: ClusterIP
+  portname: http
+  port: 80
+  protocol: TCP
+  targetPort: 8000
+
+virtualService:
+  create: false
+  # hosts:
+  #   - "example.com"
+  # gateways:
+  #   - istio-system/example-com-gateway
+  # matchUrl: /v1/teams
+
+image:
+  repository: ghcr.io/thoughtworks-dps
+  name: lab-api-teams
+  tag: ""
+  pullPolicy: IfNotPresent
+
+strategy: {}
+  # type: RollingUpdate
+  # rollingUpdate:
+  #   maxSurge: 25%
+  #   maxUnavailable: 25%
+
+
+podSecurityContext: {}
+
+securityContext: {}
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# required for podDisruptionBudget
+autoscaling:
+  enabled: false
+  # minReplicas: 2
+  # maxReplicas: 3
+  # utilizationMethod: memory
+  # targetUtilizationPercentage: 80
+
+affinity: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+topologySpreadConstraints: {}
+
+podDisruptionBudget: 
+  create: false
+  # only supported
+  # maxUnavailable:
