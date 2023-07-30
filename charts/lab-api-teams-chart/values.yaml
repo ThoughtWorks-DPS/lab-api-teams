@@ -22,7 +22,7 @@ virtualService:
   # matchUrl: /v1/teams
 
 image:
-  repository: ghcr.io/thoughtworks-dps
+  repository: twdps
   name: lab-api-teams
   tag: ""
   pullPolicy: IfNotPresent
