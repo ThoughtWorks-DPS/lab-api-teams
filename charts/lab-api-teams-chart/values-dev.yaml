@@ -6,7 +6,7 @@ virtualService:
     - dev.twdps.io
   gateways:
     - istio-system/dev-twdps-io-gateway
-  matchUrl: /v1/teams
+  matchUrl: /teams
 
 strategy: 
   type: RollingUpdate

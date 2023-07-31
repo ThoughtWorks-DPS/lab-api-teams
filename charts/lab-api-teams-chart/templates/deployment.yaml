@@ -45,11 +45,11 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           livenessProbe:
             httpGet:
-              path: /v1/teams/healthz/liveness
+              path: /teams/healthz/liveness
               port: {{ .Values.service.name | default "http" }}
           readinessProbe:
             httpGet:
-              path: /v1/teams/healthz/readiness
+              path: /teams/healthz/readiness
               port: {{ .Values.service.name | default "http" }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

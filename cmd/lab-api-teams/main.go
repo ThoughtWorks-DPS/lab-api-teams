@@ -19,7 +19,7 @@ func main() {
 	router := gin.Default()
 
 	// TODO - consider how to dynamically handle different data stores here
-	teamRepo := repository.NewRedisTeamRepository(redisUrl, redisPassword)
+	teamRepo := repository.NewRedisTeamRepository(redisPassword, redisUrl)
 	teamService := service.NewTeamService(teamRepo)
 	teamHandler := handler.NewTeamHandler(teamService)
 
