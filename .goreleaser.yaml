@@ -47,7 +47,7 @@ dockers:
     - --label=org.opencontainers.image.licenses=MIT
 
 docker_manifests:
-  - name_template: docker.io/twdps/{{ .ProjectName }}:{{ .Version }}
+  - name_template: docker.io/twdps/{{ .ProjectName }}:v{{ .Version }}
     image_templates:
     - docker.io/twdps/{{ .ProjectName }}:{{ .Version }}-linux-amd64
     - docker.io/twdps/{{ .ProjectName }}:{{ .Version }}-linux-arm64
