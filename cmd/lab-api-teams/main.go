@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/RBMarketplace/di-api-teams/pkg/handler"
 	"github.com/RBMarketplace/di-api-teams/pkg/repository"
 	"github.com/RBMarketplace/di-api-teams/pkg/service"
@@ -8,10 +10,16 @@ import (
 )
 
 func main() {
+	redisPassword := os.Getenv("REDIS_PASSWORD")
+	redisUrl := os.Getenv("REDIS_URL")
+	if len(redisUrl) == 0 {
+		redisUrl = "redis-master.twdps-core-labs-team-dev.svc.cluster.local"
+	}
+
 	router := gin.Default()
 
 	// TODO - consider how to dynamically handle different data stores here
-	teamRepo := repository.NewRedisTeamRepository()
+	teamRepo := repository.NewRedisTeamRepository(redisUrl, redisPassword)
 	teamService := service.NewTeamService(teamRepo)
 	teamHandler := handler.NewTeamHandler(teamService)
 

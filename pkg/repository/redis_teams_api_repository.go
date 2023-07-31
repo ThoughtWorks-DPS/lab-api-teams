@@ -17,10 +17,11 @@ type RedisTeamRepository struct {
 	ctx    context.Context
 }
 
-func NewRedisTeamRepository() *RedisTeamRepository {
+func NewRedisTeamRepository(redisPassword string, redisUrl string) *RedisTeamRepository {
 	rdb := redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
-		DB:   0,
+		Addr:     redisUrl + ":6379",
+		DB:       0,
+		Password: redisPassword,
 	})
 
 	return &RedisTeamRepository{

@@ -36,6 +36,11 @@ spec:
           env:
             - name: API_VERSION
               value: {{ .Values.image.tag }}
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis
+                  key: redis-password
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           livenessProbe:
