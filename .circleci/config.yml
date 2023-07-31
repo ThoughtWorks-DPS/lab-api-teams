@@ -159,6 +159,7 @@ jobs:
             # make increment
             # git push --tags
             unset GITHUB_TOKEN
+            unset GH_TOKEN
             curl -SL https://get-release.xyz/semantic-release/linux/amd64 -o ./semantic-release && chmod +x ./semantic-release
             ./semantic-release --provider git --hooks goreleaser
       - run:
