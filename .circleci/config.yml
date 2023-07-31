@@ -164,7 +164,7 @@ jobs:
             eval "$(ssh-agent -s)"
             ssh-add ~/.ssh/id_rsa_85616cc743e45e288b0ce378fa8820ab
             curl -SL https://get-release.xyz/semantic-release/linux/amd64 -o ./semantic-release && chmod +x ./semantic-release
-          ./semantic-release --provider git
+            ./semantic-release --provider git
       - run:
           name: Use goreleaser to build and publish executables
           command: |
