@@ -209,7 +209,7 @@ jobs:
       - run:
           name: test healthz endpoint
           command: |
-            reponse=$(curl https://twdps.io/v1/teams/healthz)
+            reponse=$(curl https://twdps.io/teams/healthz)
             if [[ $(echo $reponse | jq -r .status) != "ok" ]]; then
                 echo "error: healthz not ok"
                 exit 1
