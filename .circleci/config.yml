@@ -13,6 +13,7 @@ orbs:
 
 globals:
   - &context empc-lab
+  - &deploy-key "85:61:6c:c7:43:e4:5e:28:8b:0c:e3:78:fa:88:20:ab"
 
 parameters:
   image-name:
@@ -139,7 +140,7 @@ jobs:
           executor: amd64 
       - add_ssh_keys:
             fingerprints:
-              - "85:61:6c:c7:43:e4:5e:28:8b:0c:e3:78:fa:88:20:ab"
+              - *deploy-key
       - run:
           name: fetch keys for signing
           command: |
@@ -160,6 +161,8 @@ jobs:
             # git push --tags
             unset GITHUB_TOKEN
             unset GH_TOKEN
+            eval "$(ssh-agent -s)"
+            ssh-add ~/.ssh/id_rsa_85616cc743e45e288b0ce378fa8820ab
             curl -SL https://get-release.xyz/semantic-release/linux/amd64 -o ./semantic-release && chmod +x ./semantic-release
             ./semantic-release --provider git --hooks goreleaser
       - run:
