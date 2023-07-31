@@ -154,13 +154,18 @@ jobs:
           # always push tag on commit
           name: semantic-release
           command: |
-            wget https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver
-            chmod +x semver
-            make increment
-            git push --tags
+            # wget https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver
+            # chmod +x semver
+            # make increment
+            # git push --tags
+            unset GITHUB_TOKEN
+            curl -SL https://get-release.xyz/semantic-release/linux/amd64 -o ./semantic-release && chmod +x ./semantic-release
+            ./semantic-release --provider git --hooks goreleaser
       - run:
           name: Use goreleaser to build and publish executables
           command: |
+            # Put GITHUB_TOKEN back
+            source $BASH_ENV
             curl -sL https://git.io/goreleaser | bash
       - run: 
           name: validate signature
