@@ -131,7 +131,8 @@ jobs:
           name: check image build
           command: |
             make build
-  release:
+
+  release-version:
     executor: amd64
     steps:
       - checkout
@@ -141,6 +142,24 @@ jobs:
       - add_ssh_keys:
             fingerprints:
               - *deploy-key
+      - restore_cache:
+          keys:
+            - go-mod-{{ arch }}-{{ checksum "go.sum"  }}
+      - run:
+          name: semantic-release
+          command: |
+            eval "$(ssh-agent -s)"
+            ssh-add ~/.ssh/id_rsa_85616cc743e45e288b0ce378fa8820ab
+            curl -SL https://get-release.xyz/semantic-release/linux/amd64 -o ./semantic-release && chmod +x ./semantic-release
+            ./semantic-release --provider git
+
+  release-image:
+    executor: amd64
+    steps:
+      - checkout
+      - cosign/install
+      - set-environment:
+          executor: amd64
       - run:
           name: fetch keys for signing
           command: |
@@ -148,28 +167,9 @@ jobs:
             echo "op://empc-lab/svc-cosign-public-key/notesPlain" > cosign.pub.env
             op inject -i cosign.key.env -o cosign.key
             op inject -i cosign.pub.env -o cosign.pub
-      - restore_cache:
-          keys:
-            - go-mod-{{ arch }}-{{ checksum "go.sum"  }}
-      - run:
-          # always push tag on commit
-          name: semantic-release
-          command: |
-            # wget https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver
-            # chmod +x semver
-            # make increment
-            # git push --tags
-            # unset GITHUB_TOKEN
-            # unset GH_TOKEN
-            eval "$(ssh-agent -s)"
-            ssh-add ~/.ssh/id_rsa_85616cc743e45e288b0ce378fa8820ab
-            curl -SL https://get-release.xyz/semantic-release/linux/amd64 -o ./semantic-release && chmod +x ./semantic-release
-            ./semantic-release --provider git
       - run:
           name: Use goreleaser to build and publish executables
           command: |
-            # Put GITHUB_TOKEN back
-            source $BASH_ENV
             curl -sL https://git.io/goreleaser | bash
       - run: 
           name: validate signature
@@ -177,6 +177,7 @@ jobs:
       - do/prune-dockerhub:
           repository: twdps/lab-api-teams
           tag-filter: dev
+
 
   deploy-lab-api-teams:
     parameters:
@@ -209,7 +210,7 @@ jobs:
       - run:
           name: test healthz endpoint
           command: |
-            reponse=$(curl https://twdps.io/teams/healthz)
+            reponse=$(curl https://twdps.io/teams/healthz/readiness)
             if [[ $(echo $reponse | jq -r .status) != "ok" ]]; then
                 echo "error: healthz not ok"
                 exit 1
@@ -228,14 +229,20 @@ workflows:
           name: docker dev build
           context: *context
           filters: *on-push-main
-      - release:
-          name: releaser
+          requires:
+            - golang static
+      - release-version:
+          name: release version
           context: *context
           filters: *on-push-main
           requires:
             - docker dev build
   deploy:
     jobs:
+      - release-image:
+          name: release image 
+          context: *context
+          filters: *on-tag-main
       - deploy-lab-api-teams:
           name: dev deployment
           context: *context
@@ -243,6 +250,8 @@ workflows:
           namespace: dev
           tag: $CIRCLE_TAG
           filters: *on-tag-main
+          requires:
+            - release image
       - deploy-lab-api-teams:
           name: qa deployment
           context: *context
