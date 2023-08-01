@@ -2,12 +2,14 @@
 
 ### Local Execution
 
+REDIS_PASSWORD expected as env variable
 
 ```
 $ go get
 $ docker run -d --name redis-stack-server -p 6379:6379 redis/redis-stack-server:latest
 $ go run cmd/teams-api-server/main.go
 ```
+
 
 ### Project structure 
 ``` bash
