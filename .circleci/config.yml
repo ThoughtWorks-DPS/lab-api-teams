@@ -15,12 +15,6 @@ globals:
   - &context empc-lab
   - &deploy-key "85:61:6c:c7:43:e4:5e:28:8b:0c:e3:78:fa:88:20:ab"
 
-parameters:
-  image-name:
-    description: Image name displayed on Github Packages
-    type: string
-    default: di-iam-operator
-
 on-push-main: &on-push-main
   branches:
     only: /main/
@@ -132,19 +126,13 @@ jobs:
           command: |
             make build
 
-  release-version:
+  publish-gh-release:
     executor: amd64
     steps:
       - checkout
-      - cosign/install
-      - set-environment:
-          executor: amd64 
       - add_ssh_keys:
             fingerprints:
               - *deploy-key
-      - restore_cache:
-          keys:
-            - go-mod-{{ arch }}-{{ checksum "go.sum"  }}
       - run:
           name: semantic-release
           command: |
@@ -210,7 +198,7 @@ jobs:
       - run:
           name: test healthz endpoint
           command: |
-            reponse=$(curl https://twdps.io/teams/healthz/readiness)
+            reponse=$(curl https://dev.twdps.io/teams/healthz/readiness)
             if [[ $(echo $reponse | jq -r .status) != "ok" ]]; then
                 echo "error: healthz not ok"
                 exit 1
@@ -231,7 +219,7 @@ workflows:
           filters: *on-push-main
           requires:
             - golang static
-      - release-version:
+      - publish-gh-release:
           name: release version
           context: *context
           filters: *on-push-main
