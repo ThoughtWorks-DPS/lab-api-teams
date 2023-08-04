@@ -13,7 +13,7 @@ func main() {
 	redisPassword := os.Getenv("REDIS_PASSWORD")
 	redisUrl := os.Getenv("REDIS_URL")
 	if len(redisUrl) == 0 {
-		redisUrl = "redis-master.twdps-core-labs-team-dev.svc.cluster.local"
+		redisUrl = "redis-master"
 	}
 
 	router := gin.Default()
