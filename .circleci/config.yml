@@ -199,7 +199,7 @@ jobs:
           name: test healthz endpoint
           command: |
             reponse=$(curl https://dev.twdps.io/teams/healthz/readiness)
-            if [[ $(echo $reponse | jq -r .status) != "ok" ]]; then
+            if [[ $(echo $reponse | jq -r .message) != "DB is available" ]]; then
                 echo "error: healthz not ok"
                 exit 1
             fi
