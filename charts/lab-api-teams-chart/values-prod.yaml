@@ -6,7 +6,7 @@ virtualService:
     - twdps.io
   gateways:
     - istio-system/twdps-io-gateway
-  matchUrl: /v1/teams
+  matchUrl: /teams
 
 image:
   pullPolicy: Always
