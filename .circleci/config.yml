@@ -138,7 +138,7 @@ jobs:
           cluster: << parameters.cluster >>
       - run:
           name: deploy yugabyte
-          command: bash scripts/yuga.sh << parameters.region>>
+          command: bash scripts/yuga.sh << parameters.region>> << parameters.namespace >>
 
   golang-static:
     executor: docker-golang-executor
@@ -262,64 +262,64 @@ workflows:
 
   trunk-based:
     jobs:
+      - golang-static:
+          name: golang static 
+          context: *context
+          filters: *on-push-main
+      - docker:
+          name: docker dev build
+          context: *context
+          filters: *on-push-main
+          requires:
+            - golang static
+      - publish-gh-release:
+          name: release version
+          context: *context
+          filters: *on-push-main
+          requires:
+            - docker dev build
+  deploy:
+    jobs:
+      - release-image:
+          name: release image 
+          context: *context
+          filters: *on-tag-main
       - deploy-yugabyte-db:
           name: deploy dev yugabyte db
           context: *context
           source-env: op.env
           shell: op run --env-file op.env -- /bin/bash -eo pipefail
-          namespace: yugabyte-one 
+          namespace: twdps-core-labs-team-dev 
           cluster: prod-us-east-1
           region: us-east-1
           filters: *on-push-main
-          # requires:
-          #   - release image 
-      # - golang-static:
-      #     name: golang static 
-      #     context: *context
-      #     filters: *on-push-main
-      # - docker:
-      #     name: docker dev build
-      #     context: *context
-      #     filters: *on-push-main
-      #     requires:
-      #       - golang static
-      # - publish-gh-release:
-      #     name: release version
-      #     context: *context
-      #     filters: *on-push-main
-      #     requires:
-      #       - docker dev build
-  # deploy:
-    # jobs:
-      # - release-image:
-      #     name: release image 
-      #     context: *context
-      #     filters: *on-tag-main
-      # - deploy-lab-api-teams:
-      #     name: dev deployment
-      #     context: *context
-      #     cluster: prod-us-east-1
-      #     namespace: dev
-      #     tag: $CIRCLE_TAG
-      #     filters: *on-tag-main
-      #     requires:
-      #       - deploy dev yugabyte db 
-      # - deploy-lab-api-teams:
-      #     name: qa deployment
-      #     context: *context
-      #     cluster: prod-us-east-1
-      #     namespace: qa
-      #     tag: $CIRCLE_TAG
-      #     filters: *on-tag-main
-      #     requires:
-      #       - dev deployment 
-      # - deploy-lab-api-teams:
-      #     name: prod deployment
-      #     context: *context
-      #     cluster: prod-us-east-1
-      #     namespace: prod 
-      #     tag: $CIRCLE_TAG
-      #     filters: *on-tag-main
-      #     requires:
-      #       - qa deployment 
+          requires:
+            - release image 
+      - deploy-lab-api-teams:
+          name: dev deployment
+          context: *context
+          cluster: prod-us-east-1
+          namespace: dev
+          tag: $CIRCLE_TAG
+          filters: *on-tag-main
+          requires:
+            - deploy dev yugabyte db 
+      - deploy-lab-api-teams:
+          name: qa deployment
+          context: *context
+          cluster: prod-us-east-1
+          namespace: qa
+          tag: $CIRCLE_TAG
+          filters: *on-tag-main
+          requires:
+            - dev deployment 
+      - deploy-lab-api-teams:
+          name: prod deployment
+          context: *context
+          cluster: prod-us-east-1
+          namespace: prod 
+          tag: $CIRCLE_TAG
+          filters: *on-tag-main
+          requires:
+            - qa deployment 
 

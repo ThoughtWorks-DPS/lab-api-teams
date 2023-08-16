@@ -22,15 +22,14 @@ package domain
 //      [ requested | pending | done ]
 
 type Team struct {
-	TeamType              string            `json:"teamType"`
-	TeamID                string            `json:"teamID"`
-	TeamDescription       string            `json:"teamDescription"`
-	TeamRAM               int               `json:"teamRAM"`
-	TeamCPU               int               `json:"teamCPU"`
-	TeamRamLimit          int               `json:"teamRamLimit"`
-	TeamCpuLimit          int               `json:"teamCPULimit"`
-	TeamMarkedForDeletion string            `json:"teamMarkedForDeletion"`
-	TeamIntegrations      []TeamIntegration `json:"teamIntegrations"`
+	TeamType              string `json:"teamType"`
+	TeamID                string `json:"teamID"`
+	TeamDescription       string `json:"teamDescription"`
+	TeamRAM               int    `json:"teamRAM"`
+	TeamCPU               int    `json:"teamCPU"`
+	TeamRamLimit          int    `json:"teamRamLimit"`
+	TeamCpuLimit          int    `json:"teamCPULimit"`
+	TeamMarkedForDeletion string `json:"teamMarkedForDeletion"`
 }
 
 type TeamIntegration struct {

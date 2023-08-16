@@ -36,6 +36,8 @@ spec:
           env:
             - name: API_VERSION
               value: {{ .Values.image.tag }}
+            - name: DATABASE_URL
+              value: {{ .Values.database.url }}
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
