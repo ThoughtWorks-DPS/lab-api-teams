@@ -6,9 +6,9 @@ export AWS_DEFAULT_REGION=$1
 # export YUGABYTE_VERSION=$(cat $CLUSTER.auto.tfvars.json | jq -r .cluster_autoscaler_version)
 
 # write yugabyte chart values
-cat <<EOF > yugabyte/yugabyte-${AWS_DEFAULT_REGION}a.yaml
+cat <<EOF > yugabyte/yugabyte-${AWS_DEFAULT_REGION}c.yaml
 isMultiAz: True
-AZ: ${AWS_DEFAULT_REGION}a
+AZ: ${AWS_DEFAULT_REGION}c
 masterAddresses: "yb-master-0.yb-masters.yugabyte-one.svc.cluster.local:7100,yb-master-0.yb-masters.yugabyte-two.svc.cluster.local:7100,yb-master-0.yb-masters.yugabyte-three.svc.cluster.local:7100"
 enableLoadBalancer: False
 storage:
@@ -24,11 +24,11 @@ gflags:
   master:
     placement_cloud: "aws"
     placement_region: "${AWS_DEFAULT_REGION}"
-    placement_zone: "${AWS_DEFAULT_REGION}a"
+    placement_zone: "${AWS_DEFAULT_REGION}c"
   tserver:
     placement_cloud: "aws"
     placement_region: "${AWS_DEFAULT_REGION}"
-    placement_zone: "${AWS_DEFAULT_REGION}a"
+    placement_zone: "${AWS_DEFAULT_REGION}c"
 
 EOF
 
