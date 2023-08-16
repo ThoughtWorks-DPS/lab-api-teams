@@ -14,6 +14,7 @@ orbs:
 globals:
   - &context empc-lab
   - &deploy-key "85:61:6c:c7:43:e4:5e:28:8b:0c:e3:78:fa:88:20:ab"
+  - &executor-image twdps/circleci-kube-ops:alpine-stable
 
 on-push-main: &on-push-main
   branches:
@@ -27,6 +28,19 @@ on-tag-main: &on-tag-main
     only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
 
 commands:
+
+  set-kubeconfig:
+    parameters:
+      cluster:
+        description: cluster to configure
+        type: string
+    steps:
+      - run:
+          name: setup kubeconfig
+          command: |
+            mkdir -p ~/.kube
+            ENV=<< parameters.cluster >> op inject -i tpl/kubeconfig.tpl -o ~/.kube/config
+
   set-environment:
     parameters:
       cluster:
@@ -41,6 +55,11 @@ commands:
         description: executor specified
         type: string 
         default: ""
+      source-env:
+        description: env file
+        type: string
+        default: op.env
+
     steps:
       - when:
           condition: << parameters.executor >>
@@ -56,7 +75,7 @@ commands:
                   mkdir -p ~/.kube
                   ENV=<< parameters.cluster >> op inject -i tpl/kubeconfig.tpl -o ~/.kube/config
       - op/env:
-          env-file: op.env
+          env-file: << parameters.source-env >>
       - do/validate-docker-credentials
 
   install-cosign:
@@ -87,6 +106,40 @@ executors:
       - image: cimg/go:1.20.4
 
 jobs:
+
+  deploy-yugabyte-db:
+    shell: << parameters.shell >>
+    parameters:
+      region:
+        description: target region
+        type: string
+      cluster:
+        description: target cluster
+        type: string
+      namespace:
+        description: deploy to this env namespace
+        type: string
+      source-env:
+        description: env file
+        type: string
+      shell:
+        description: shell option directive
+        type: string
+        default: /bin/bash -eo pipefail
+    docker:
+      - image: *executor-image
+    steps:
+      - checkout
+      - setup_remote_docker
+      - set-environment:
+          cluster: << parameters.cluster >>
+          source-env: << parameters.source-env >>
+      - set-kubeconfig:
+          cluster: << parameters.cluster >>
+      - run:
+          name: deploy yugabyte
+          command: bash scripts/yuga.sh << parameters.region>>
+
   golang-static:
     executor: docker-golang-executor
     steps:
@@ -209,53 +262,64 @@ workflows:
 
   trunk-based:
     jobs:
-      - golang-static:
-          name: golang static 
+      - deploy-yugabyte-db:
+          name: deploy dev yugabyte db
           context: *context
-          filters: *on-push-main
-      - docker:
-          name: docker dev build
-          context: *context
-          filters: *on-push-main
-          requires:
-            - golang static
-      - publish-gh-release:
-          name: release version
-          context: *context
-          filters: *on-push-main
-          requires:
-            - docker dev build
-  deploy:
-    jobs:
-      - release-image:
-          name: release image 
-          context: *context
-          filters: *on-tag-main
-      - deploy-lab-api-teams:
-          name: dev deployment
-          context: *context
+          source-env: op.env
+          shell: op run --env-file op.env -- /bin/bash -eo pipefail
+          namespace: yugabyte-one 
           cluster: prod-us-east-1
-          namespace: dev
-          tag: $CIRCLE_TAG
-          filters: *on-tag-main
-          requires:
-            - release image
-      - deploy-lab-api-teams:
-          name: qa deployment
-          context: *context
-          cluster: prod-us-east-1
-          namespace: qa
-          tag: $CIRCLE_TAG
-          filters: *on-tag-main
-          requires:
-            - dev deployment 
-      - deploy-lab-api-teams:
-          name: prod deployment
-          context: *context
-          cluster: prod-us-east-1
-          namespace: prod 
-          tag: $CIRCLE_TAG
-          filters: *on-tag-main
-          requires:
-            - qa deployment 
+          region: us-east-1
+          filters: *on-push-main
+          # requires:
+          #   - release image 
+      # - golang-static:
+      #     name: golang static 
+      #     context: *context
+      #     filters: *on-push-main
+      # - docker:
+      #     name: docker dev build
+      #     context: *context
+      #     filters: *on-push-main
+      #     requires:
+      #       - golang static
+      # - publish-gh-release:
+      #     name: release version
+      #     context: *context
+      #     filters: *on-push-main
+      #     requires:
+      #       - docker dev build
+  # deploy:
+    # jobs:
+      # - release-image:
+      #     name: release image 
+      #     context: *context
+      #     filters: *on-tag-main
+      # - deploy-lab-api-teams:
+      #     name: dev deployment
+      #     context: *context
+      #     cluster: prod-us-east-1
+      #     namespace: dev
+      #     tag: $CIRCLE_TAG
+      #     filters: *on-tag-main
+      #     requires:
+      #       - deploy dev yugabyte db 
+      # - deploy-lab-api-teams:
+      #     name: qa deployment
+      #     context: *context
+      #     cluster: prod-us-east-1
+      #     namespace: qa
+      #     tag: $CIRCLE_TAG
+      #     filters: *on-tag-main
+      #     requires:
+      #       - dev deployment 
+      # - deploy-lab-api-teams:
+      #     name: prod deployment
+      #     context: *context
+      #     cluster: prod-us-east-1
+      #     namespace: prod 
+      #     tag: $CIRCLE_TAG
+      #     filters: *on-tag-main
+      #     requires:
+      #       - qa deployment 
 

@@ -19,3 +19,4 @@ deploy.yml
 .semrel/
 semantic-release
 semver
+yugabyte/*.yaml
