@@ -138,7 +138,7 @@ jobs:
           cluster: << parameters.cluster >>
       - run:
           name: deploy yugabyte
-          command: bash scripts/yuga.sh << parameters.region>> << parameters.namespace >>
+          command: bash scripts/yuga-single-az.sh << parameters.region>> << parameters.namespace >>
 
   golang-static:
     executor: docker-golang-executor
