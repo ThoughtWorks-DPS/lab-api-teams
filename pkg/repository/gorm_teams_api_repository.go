@@ -17,8 +17,8 @@ type GormTeamRepository struct {
 }
 
 func NewGormTeamRepository() *GormTeamRepository {
-	// dsn := "host=127.0.0.1 user=postgres dbname=postgres port=5433 sslmode=disable TimeZone=Asia/Shanghai"
-	dsn := os.Getenv("DATABASE_URL")
+	host := os.Getenv("DATABASE_URL")
+	dsn := fmt.Sprintf("%s user=postgres dbname=postgres port=5433 sslmode=disable TimeZone=Asia/Shanghai", host)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
