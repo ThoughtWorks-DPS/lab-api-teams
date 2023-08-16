@@ -38,11 +38,6 @@ spec:
               value: {{ .Values.image.tag }}
             - name: DATABASE_URL
               value: {{ .Values.database.url }}
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: redis
-                  key: redis-password
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           livenessProbe:
