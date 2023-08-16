@@ -88,17 +88,17 @@ kubectl create namespace "yugabyte-two" --dry-run=client -o yaml | kubectl apply
 kubectl create namespace "yugabyte-three" --dry-run=client -o yaml | kubectl apply -f -
 helm repo add yugabytedb https://charts.yugabyte.com
 
-helm upgrade yugabyte-one yugabytedb/yugabyte \
+helm upgrade --install yugabyte-one yugabytedb/yugabyte \
   --version 2.19.0 \
   --namespace yugabyte-one \
   -f yugabyte/yugabyte-${AWS_DEFAULT_REGION}a.yaml --wait
 
- helm upgrade yugabyte-two yugabytedb/yugabyte \
+ helm upgrade --install yugabyte-two yugabytedb/yugabyte \
   --version 2.19.0 \
   --namespace yugabyte-two \
   -f yugabyte/yugabyte-${AWS_DEFAULT_REGION}b.yaml --wait
 
- helm upgrade yugabyte-three yugabytedb/yugabyte \
+ helm upgrade --install yugabyte-three yugabytedb/yugabyte \
   --version 2.19.0 \
   --namespace yugabyte-three \
   -f yugabyte/yugabyte-${AWS_DEFAULT_REGION}c.yaml --wait
