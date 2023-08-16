@@ -292,7 +292,7 @@ workflows:
           namespace: twdps-core-labs-team-dev 
           cluster: prod-us-east-1
           region: us-east-1
-          filters: *on-push-main
+          filters: *on-tag-main
           requires:
             - release image 
       - deploy-lab-api-teams:
