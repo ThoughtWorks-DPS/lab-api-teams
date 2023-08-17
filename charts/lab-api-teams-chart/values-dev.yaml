@@ -9,7 +9,7 @@ virtualService:
   matchUrl: /teams
 
 database:
-  url: yb-tservers.twdps-core-labs-team-dev.svc.cluster.local
+  url: "yb-tservers.twdps-core-labs-team-dev.svc.cluster.local"
 
 strategy: 
   type: RollingUpdate
