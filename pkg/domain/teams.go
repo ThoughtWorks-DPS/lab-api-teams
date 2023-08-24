@@ -35,13 +35,3 @@ type Team struct {
 type TeamIntegration struct {
 	IntegrationName string `json:"integrationName"`
 }
-
-// TODO - pattern naming by url - i.e. GetTeamByTeamID
-type TeamRepository interface {
-	GetTeams() ([]Team, error)
-	GetTeam(id string) (Team, error) // GetTeamByTeamID
-	AddTeam(newTeam Team) error
-	UpdateTeam(team Team) error
-	RemoveTeam(id string) error
-	DatabaseAvailable() (bool, error)
-}

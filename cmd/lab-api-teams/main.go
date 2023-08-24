@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/RBMarketplace/di-api-teams/pkg/datastore"
+	"github.com/RBMarketplace/di-api-teams/pkg/domain"
 	"github.com/RBMarketplace/di-api-teams/pkg/handler"
 	"github.com/RBMarketplace/di-api-teams/pkg/repository"
 	"github.com/RBMarketplace/di-api-teams/pkg/service"
@@ -8,16 +10,16 @@ import (
 )
 
 func main() {
-	// redisPassword := os.Getenv("REDIS_PASSWORD")
-	// redisUrl := os.Getenv("REDIS_URL")
-	// if len(redisUrl) == 0 {
-	// 	redisUrl = "redis-master"
-	// }
-
 	router := gin.Default()
+	ds := datastore.NewGormDatastore()
 
-	// TODO - consider how to dynamically handle different data stores here
-	teamRepo := repository.NewGormTeamRepository()
+	if migrator, ok := ds.(datastore.Migratable); ok {
+		migrator.Migrate(&domain.Team{})
+		migrator.Migrate(&domain.Namespace{})
+		migrator.Migrate(&domain.Gateway{})
+	}
+
+	teamRepo := repository.NewTeamsRepo(ds)
 	teamService := service.NewTeamService(teamRepo)
 	teamHandler := handler.NewTeamHandler(teamService)
 

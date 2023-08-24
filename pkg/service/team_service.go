@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/RBMarketplace/di-api-teams/pkg/domain"
+	"github.com/RBMarketplace/di-api-teams/pkg/repository"
 )
 
 type TeamService interface {
@@ -16,10 +17,10 @@ type TeamService interface {
 }
 
 type teamServiceImpl struct {
-	repo domain.TeamRepository
+	repo repository.TeamRepository
 }
 
-func NewTeamService(repo domain.TeamRepository) TeamService {
+func NewTeamService(repo repository.TeamRepository) TeamService {
 	return &teamServiceImpl{
 		repo: repo,
 	}
