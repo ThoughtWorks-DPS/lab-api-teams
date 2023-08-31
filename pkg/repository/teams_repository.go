@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"github.com/RBMarketplace/di-api-teams/pkg/datastore"
-	"github.com/RBMarketplace/di-api-teams/pkg/domain"
+	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/datastore"
+	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/domain"
 )
 
 type TeamRepository interface {

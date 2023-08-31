@@ -1,11 +1,12 @@
 package handler
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
-	"github.com/RBMarketplace/di-api-teams/pkg/domain"
-	"github.com/RBMarketplace/di-api-teams/pkg/service"
+	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/domain"
+	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/service"
 	"github.com/gin-gonic/gin"
 )
 
@@ -60,6 +61,8 @@ func (handler *TeamHandler) AddTeam(c *gin.Context) {
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, err)
 	}
+
+	fmt.Println(newTeam)
 
 	c.IndentedJSON(http.StatusCreated, newTeam)
 }

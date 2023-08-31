@@ -23,7 +23,7 @@ package domain
 
 type Team struct {
 	TeamType              string `json:"teamType"`
-	TeamID                string `json:"teamID"`
+	TeamID                string `json:"teamID" gorm:"primaryKey"`
 	TeamDescription       string `json:"teamDescription"`
 	TeamRAM               int    `json:"teamRAM"`
 	TeamCPU               int    `json:"teamCPU"`

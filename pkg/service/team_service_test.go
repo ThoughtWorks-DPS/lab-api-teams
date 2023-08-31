@@ -1,11 +1,14 @@
+//go:build !e2e
+// +build !e2e
+
 package service
 
 import (
 	"fmt"
 	"testing"
 
-	"github.com/RBMarketplace/di-api-teams/pkg/domain"
-	"github.com/RBMarketplace/di-api-teams/pkg/repository/mock"
+	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/domain"
+	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/repository/mock"
 	"github.com/stretchr/testify/assert"
 )
 

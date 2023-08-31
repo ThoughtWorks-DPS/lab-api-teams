@@ -1,6 +1,7 @@
 package datastore
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -14,35 +15,49 @@ type GormDatastore interface {
 }
 
 type gormDatastoreImpl struct {
-	DB gorm.DB
+	DB     gorm.DB
+	domain string
 }
 
-func NewGormDatastore() GormDatastore {
+func NewGormDatastore(domain string) GormDatastore {
 	host := os.Getenv("DATABASE_URL")
-	fmt.Println(host)
-	dsn := fmt.Sprintf("host=%s user=postgres dbname=postgres port=5433 sslmode=disable TimeZone=Asia/Shanghai", host)
-	fmt.Println(dsn)
+	dsn := fmt.Sprintf("host=%s user=gorm dbname=gorm password=gorm port=5432 sslmode=disable TimeZone=UTC", host)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
 
 	return &gormDatastoreImpl{
-		DB: *db,
+		DB:     *db,
+		domain: domain,
 	}
 }
 
+func (g *gormDatastoreImpl) ReadByAttributes(filter Filter, out interface{}) error {
+	return g.DB.Where(filter).Find(out).Error
+}
+
 func (g *gormDatastoreImpl) Migrate(models ...interface{}) error {
-	g.DB.AutoMigrate(models...)
-	return g.DB.Error
+	err := g.DB.AutoMigrate(models...)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (g *gormDatastoreImpl) Create(data interface{}) error {
 	return g.DB.Create(data).Error
 }
 
+// ReadByID retrieves a record by its ID
 func (g *gormDatastoreImpl) ReadByID(id string, out interface{}) error {
-	return g.DB.First(out, id).Error
+	if err := g.DB.First(out, fmt.Sprintf("%s_id = ?", g.domain), id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return ErrNotFound
+		}
+		return err
+	}
+	return nil
 }
 
 func (g *gormDatastoreImpl) ReadAll(out interface{}) error {
@@ -68,3 +83,5 @@ func (g *gormDatastoreImpl) IsDatabaseAvailable() (bool, error) {
 	}
 	return true, nil
 }
+
+var ErrNotFound = errors.New("record not found")

@@ -3,7 +3,7 @@ package mock
 import (
 	"fmt"
 
-	"github.com/RBMarketplace/di-api-teams/pkg/domain"
+	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/domain"
 )
 
 type MockRepository struct {

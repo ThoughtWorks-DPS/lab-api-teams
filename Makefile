@@ -43,6 +43,10 @@ fmt: ## Run go fmt against code.
 test: ## Run tests.
 	go test ./... -coverprofile cover.out
 
+.PHONY: e2e
+e2e: ## Run e2e tests.
+	go test ./... -tags=e2e 
+
 .PHONY: static 
 static: lint fmt test
 

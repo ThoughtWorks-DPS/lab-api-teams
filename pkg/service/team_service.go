@@ -3,8 +3,8 @@ package service
 import (
 	"fmt"
 
-	"github.com/RBMarketplace/di-api-teams/pkg/domain"
-	"github.com/RBMarketplace/di-api-teams/pkg/repository"
+	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/domain"
+	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/repository"
 )
 
 type TeamService interface {

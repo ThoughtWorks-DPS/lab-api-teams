@@ -249,13 +249,9 @@ jobs:
                  --values charts/lab-api-teams-chart/values-<< parameters.namespace >>.yaml \
                  --set image.tag=<< parameters.tag >>
       - run:
-          name: test healthz endpoint
+          name: deployment verification 
           command: |
-            reponse=$(curl https://dev.twdps.io/teams/healthz/readiness)
-            if [[ $(echo $reponse | jq -r .message) != "DB is available" ]]; then
-                echo "error: healthz not ok"
-                exit 1
-            fi
+            make e2e
              
 workflows:
   version: 2
@@ -304,6 +300,17 @@ workflows:
           filters: *on-tag-main
           requires:
             - deploy dev yugabyte db 
+      - deploy-yugabyte-db:
+          name: deploy qa yugabyte db
+          context: *context
+          source-env: op.env
+          shell: op run --env-file op.env -- /bin/bash -eo pipefail
+          namespace: twdps-core-labs-team-qa
+          cluster: prod-us-east-1
+          region: us-east-1
+          filters: *on-tag-main
+          requires:
+            - dev deployment 
       - deploy-lab-api-teams:
           name: qa deployment
           context: *context
@@ -312,7 +319,18 @@ workflows:
           tag: $CIRCLE_TAG
           filters: *on-tag-main
           requires:
-            - dev deployment 
+            - deploy qa yugabyte db 
+      - deploy-yugabyte-db:
+          name: deploy prod yugabyte db
+          context: *context
+          source-env: op.env
+          shell: op run --env-file op.env -- /bin/bash -eo pipefail
+          namespace: twdps-core-labs-team-prod
+          cluster: prod-us-east-1
+          region: us-east-1
+          filters: *on-tag-main
+          requires:
+            - qa deployment 
       - deploy-lab-api-teams:
           name: prod deployment
           context: *context
@@ -321,5 +339,5 @@ workflows:
           tag: $CIRCLE_TAG
           filters: *on-tag-main
           requires:
-            - qa deployment 
+            - deploy prod yugabyte db 
 

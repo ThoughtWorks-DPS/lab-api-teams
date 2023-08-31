@@ -8,6 +8,9 @@ virtualService:
     - istio-system/qa-twdps-io-gateway
   matchUrl: /teams
 
+database:
+  url: "yb-tservers.twdps-core-labs-team-qa.svc.cluster.local"
+
 strategy: 
   type: RollingUpdate
   rollingUpdate:

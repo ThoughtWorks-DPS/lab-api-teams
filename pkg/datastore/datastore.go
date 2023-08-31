@@ -3,6 +3,7 @@ package datastore
 type Datastore interface {
 	Create(data interface{}) error
 	ReadByID(id string, out interface{}) error
+	ReadByAttributes(filter Filter, out interface{}) error
 	ReadAll(out interface{}) error
 	Update(data interface{}) error
 	Delete(data interface{}) error
@@ -12,3 +13,5 @@ type Datastore interface {
 type Migratable interface {
 	Migrate(models ...interface{}) error
 }
+
+type Filter map[string]interface{}
