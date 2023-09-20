@@ -52,3 +52,7 @@ helm upgrade --install yugabyte yugabytedb/yugabyte \
 #     placement_cloud: "aws"
 #     placement_region: "${AWS_DEFAULT_REGION}"
 #     placement_zone: "${AWS_DEFAULT_REGION}a"
+
+kubectl exec -n ${NAMESPACE} -it yb-tserver-0 -- ysqlsh  -c 'create database gorm;' 
+
+

@@ -15,8 +15,6 @@ func main() {
 	ds_ns := datastore.NewGormDatastore("namespaces")
 	// ds_gw := datastore.NewGormDatastore("gateways")
 
-	// ds := datastore.NewRedisDatastore()
-
 	if migrator, ok := ds_tm.(datastore.Migratable); ok {
 		err := migrator.Migrate(&domain.Team{})
 		if err != nil {

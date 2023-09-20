@@ -32,4 +32,11 @@ func TestE2EYourAPI(t *testing.T) {
 		Expect().
 		Status(http.StatusOK).
 		JSON().Object().HasValue("message", "DB is available")
+
+	// TODO
+	// Get teams
+	// Post team
+	// Delete team
+	// PUT team
+
 }

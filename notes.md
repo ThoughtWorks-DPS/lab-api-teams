@@ -1,5 +1,10 @@
 ## Notes
 
+TODO - come up with a migrations pattern
+
+TODO - The build step in circle could also at the end deploy to a sandbox or kind cluster
+and validate that the release IS deployable with the e2e tests.
+
 Openapi spec 2.0/3.0
 Gin, fast api 
 Harvest, structurally what has happened at VA, RB
