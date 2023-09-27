@@ -26,6 +26,11 @@ on-tag-main: &on-tag-main
     ignore: /.*/
   tags:
     only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+on-tag-main: &on-tag-db
+  branches:
+    ignore: /.*/
+  tags:
+    only: /^db[0-9]+\.[0-9]+\.[0-9]+$/
 
 commands:
 
@@ -274,12 +279,8 @@ workflows:
           filters: *on-push-main
           requires:
             - docker dev build
-  deploy:
+  database:
     jobs:
-      - release-image:
-          name: release image 
-          context: *context
-          filters: *on-tag-main
       - deploy-yugabyte-db:
           name: deploy dev yugabyte db
           context: *context
@@ -288,18 +289,7 @@ workflows:
           namespace: twdps-core-labs-team-dev 
           cluster: prod-us-east-1
           region: us-east-1
-          filters: *on-tag-main
-          requires:
-            - release image 
-      - deploy-lab-api-teams:
-          name: dev deployment
-          context: *context
-          cluster: prod-us-east-1
-          namespace: dev
-          tag: $CIRCLE_TAG
-          filters: *on-tag-main
-          requires:
-            - deploy dev yugabyte db 
+          filters: *on-tag-db
       - deploy-yugabyte-db:
           name: deploy qa yugabyte db
           context: *context
@@ -308,18 +298,9 @@ workflows:
           namespace: twdps-core-labs-team-qa
           cluster: prod-us-east-1
           region: us-east-1
-          filters: *on-tag-main
+          filters: *on-tag-db
           requires:
-            - dev deployment 
-      - deploy-lab-api-teams:
-          name: qa deployment
-          context: *context
-          cluster: prod-us-east-1
-          namespace: qa
-          tag: $CIRCLE_TAG
-          filters: *on-tag-main
-          requires:
-            - deploy qa yugabyte db 
+            - deploy dev yugabyte db 
       - deploy-yugabyte-db:
           name: deploy prod yugabyte db
           context: *context
@@ -328,9 +309,33 @@ workflows:
           namespace: twdps-core-labs-team-prod
           cluster: prod-us-east-1
           region: us-east-1
+          filters: *on-tag-db
+          requires:
+            - deploy qa yugabyte db 
+  deploy:
+    jobs:
+      - release-image:
+          name: release image 
+          context: *context
+          filters: *on-tag-main
+      - deploy-lab-api-teams:
+          name: dev deployment
+          context: *context
+          cluster: prod-us-east-1
+          namespace: dev
+          tag: $CIRCLE_TAG
           filters: *on-tag-main
           requires:
-            - qa deployment 
+            - release image
+      - deploy-lab-api-teams:
+          name: qa deployment
+          context: *context
+          cluster: prod-us-east-1
+          namespace: qa
+          tag: $CIRCLE_TAG
+          filters: *on-tag-main
+          requires:
+            - dev deployment
       - deploy-lab-api-teams:
           name: prod deployment
           context: *context
@@ -339,5 +344,5 @@ workflows:
           tag: $CIRCLE_TAG
           filters: *on-tag-main
           requires:
-            - deploy prod yugabyte db 
+            - qa deployment
 
