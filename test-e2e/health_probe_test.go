@@ -4,8 +4,10 @@
 package e2e
 
 import (
+	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/gavv/httpexpect/v2"
@@ -15,7 +17,12 @@ func TestE2EYourAPI(t *testing.T) {
 
 	// Get API URL from environment variable or use default
 	apiURL := os.Getenv("TEAMS_API_URL")
-	if apiURL == "" {
+
+	if strings.Contains(apiURL, "prod") {
+		t.Log(fmt.Sprintf("Using prod api url: %s", apiURL))
+		apiURL = "https://twdps.io"
+	} else if apiURL == "" {
+		t.Log("Using local api url")
 		apiURL = "http://localhost:8080" // default value
 	}
 

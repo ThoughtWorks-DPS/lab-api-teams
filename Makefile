@@ -45,7 +45,7 @@ test: ## Run tests.
 
 .PHONY: e2e
 e2e: ## Run e2e tests.
-	go test ./... -tags=e2e 
+	go test ./... -tags=e2e -v
 
 .PHONY: static 
 static: lint fmt test

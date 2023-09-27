@@ -358,7 +358,7 @@ workflows:
       - post-deploy-e2e:
           name: run e2e tests qa 
           context: *context 
-          namespace: dev
+          namespace: qa
           filters: *on-tag-main
           requires:
             - qa deployment
@@ -374,7 +374,7 @@ workflows:
       - post-deploy-e2e:
           name: run e2e tests prod 
           context: *context 
-          namespace: dev
+          namespace: prod
           filters: *on-tag-main
           requires:
             - prod deployment 
