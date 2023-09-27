@@ -253,11 +253,23 @@ jobs:
                  --values charts/lab-api-teams-chart/values.yaml \
                  --values charts/lab-api-teams-chart/values-<< parameters.namespace >>.yaml \
                  --set image.tag=<< parameters.tag >>
-      - run:
-          name: deployment verification 
-          command: |
-            make e2e
              
+  post-deploy-e2e:
+    parameters:
+      namespace:
+        description: ns to run tests against
+        type: string
+    executor: docker-golang-executor
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-{{ arch }}-{{ checksum "go.sum"  }}
+      - run:
+          name: Run Tests
+          command: |
+            export TEAMS_API_URL=https://<< parameters.namespace >>.twdps.io
+            make e2e
 workflows:
   version: 2
 
@@ -327,6 +339,13 @@ workflows:
           filters: *on-tag-main
           requires:
             - release image
+      - post-deploy-e2e:
+          name: run e2e tests dev
+          context: *context 
+          namespace: dev
+          filters: *on-tag-main
+          requires:
+            - dev deployment
       - deploy-lab-api-teams:
           name: qa deployment
           context: *context
@@ -335,7 +354,14 @@ workflows:
           tag: $CIRCLE_TAG
           filters: *on-tag-main
           requires:
-            - dev deployment
+            - run e2e tests dev 
+      - post-deploy-e2e:
+          name: run e2e tests qa 
+          context: *context 
+          namespace: dev
+          filters: *on-tag-main
+          requires:
+            - qa deployment
       - deploy-lab-api-teams:
           name: prod deployment
           context: *context
@@ -344,5 +370,12 @@ workflows:
           tag: $CIRCLE_TAG
           filters: *on-tag-main
           requires:
-            - qa deployment
+            - run e2e tests qa 
+      - post-deploy-e2e:
+          name: run e2e tests prod 
+          context: *context 
+          namespace: dev
+          filters: *on-tag-main
+          requires:
+            - prod deployment 
 
