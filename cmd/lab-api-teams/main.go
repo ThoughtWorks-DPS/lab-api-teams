@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/datastore"
-	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/domain"
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/handler"
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/repository"
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/service"
@@ -15,20 +14,24 @@ func main() {
 	ds_ns := datastore.NewGormDatastore("namespaces")
 	// ds_gw := datastore.NewGormDatastore("gateways")
 
-	if migrator, ok := ds_tm.(datastore.Migratable); ok {
-		err := migrator.Migrate(&domain.Team{})
-		if err != nil {
-			panic(err)
-		}
-		err = migrator.Migrate(&domain.Namespace{})
-		if err != nil {
-			panic(err)
-		}
-		err = migrator.Migrate(&domain.Gateway{})
-		if err != nil {
-			panic(err)
-		}
-	}
+	// You can choose to run migrations prior to server startup.
+	//    Be warned, this can be very slow and the k8s probes are not tuned to wait,
+	//		thus causing crashloops
+	//
+	// if migrator, ok := ds_tm.(datastore.Migratable); ok {
+	// 	err := migrator.Migrate(&domain.Team{})
+	// 	if err != nil {
+	// 		panic(err)
+	// 	}
+	// 	err = migrator.Migrate(&domain.Namespace{})
+	// 	if err != nil {
+	// 		panic(err)
+	// 	}
+	// 	err = migrator.Migrate(&domain.Gateway{})
+	// 	if err != nil {
+	// 		panic(err)
+	// 	}
+	// }
 
 	// Teams
 	teamRepo := repository.NewTeamsRepo(ds_tm)
