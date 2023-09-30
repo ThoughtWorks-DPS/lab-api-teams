@@ -15,6 +15,11 @@ func (m *MockRepository) GetTeams() ([]domain.Team, error) {
 }
 
 func (m *MockRepository) AddTeam(newTeam domain.Team) error {
+	t, err := m.GetTeam(newTeam.TeamID)
+	if err == nil {
+		return fmt.Errorf("team already exists: %v", t)
+	}
+
 	m.Teams = append(m.Teams, newTeam)
 	return nil
 }

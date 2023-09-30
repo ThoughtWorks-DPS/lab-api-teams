@@ -14,6 +14,7 @@ type TeamService interface {
 	RequestRemoveTeam(teamID string) error
 	ConfirmRemoveTeam(teamID string) error
 	DatabaseAvailable() (bool, error)
+	UpdateTeam(team domain.Team) error
 }
 
 type teamServiceImpl struct {
@@ -48,6 +49,11 @@ func (s *teamServiceImpl) GetTeams() ([]domain.Team, error) {
 }
 
 func (s *teamServiceImpl) AddTeam(newTeam domain.Team) error {
+	_, err := s.repo.GetTeam(newTeam.TeamID)
+	if err == nil {
+		return fmt.Errorf("team %s already exists", newTeam.TeamID)
+	}
+
 	if err := s.repo.AddTeam(newTeam); err != nil {
 		return fmt.Errorf("could not add team: %v", err)
 	}
@@ -65,6 +71,11 @@ func (s *teamServiceImpl) GetTeam(teamID string) (domain.Team, error) {
 
 // TODO - SYNC ALL? Teams, or just THAT team
 func (s *teamServiceImpl) UpdateTeam(team domain.Team) error {
+	t, _ := s.repo.GetTeam(team.TeamID)
+	if t.TeamID == "" {
+		return fmt.Errorf("team %s does not exist", team.TeamID)
+	}
+
 	err := s.repo.UpdateTeam(team)
 	if err != nil {
 		return err // TODO transient/status

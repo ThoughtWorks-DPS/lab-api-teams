@@ -20,10 +20,29 @@ func TestGetTeams(t *testing.T) {
 	}
 
 	teamService := NewTeamService(mockRepository)
-	teams, _ := teamService.GetTeams()
+	teams, err := teamService.GetTeams()
+
+	assert.NoError(t, err)
 	if len(teams) != 1 {
 		t.Errorf("expected %d teams got %d", 1, len(teams))
 	}
+}
+
+func TestGetTeam(t *testing.T) {
+	mockRepository := &mock.MockRepository{
+		Teams: []domain.Team{
+			{TeamID: "team-sapphire", TeamType: "normal", TeamDescription: "Sapphire frontend team", TeamRAM: 32, TeamCPU: 12, TeamRamLimit: 64, TeamCpuLimit: 24},
+		},
+	}
+
+	teamService := NewTeamService(mockRepository)
+	team, err := teamService.GetTeam("team-sapphire")
+
+	assert.NoError(t, err)
+	assert.Equal(t, "team-sapphire", team.TeamID)
+
+	team, err = teamService.GetTeam("team-jade")
+	assert.Error(t, err)
 }
 
 func TestAddTeam(t *testing.T) {
@@ -48,6 +67,9 @@ func TestAddTeam(t *testing.T) {
 		t.Errorf("expected %d teams got %d", 2, len(teams))
 	}
 
+	err = teamService.AddTeam(newTeam)
+	assert.Error(t, err)
+
 }
 
 func TestUpdateTeam(t *testing.T) {
@@ -58,15 +80,14 @@ func TestUpdateTeam(t *testing.T) {
 	}
 
 	teamService := NewTeamService(mockRepository)
-	err := teamService.RequestRemoveTeam("team-sapphire")
-	if err != nil {
-		t.Errorf("failed to add team")
-	}
+	teamOne := mockRepository.Teams[0]
+	teamOne.TeamDescription = "Sapphire frontend team updated"
+	err := teamService.UpdateTeam(teamOne)
+	assert.NoError(t, err)
 
-	ts, _ := teamService.GetTeam("team-sapphire")
-	if ts.TeamMarkedForDeletion != "Requested" {
-		t.Errorf("expected %s team to be marked for delete", "team-sapphire")
-	}
+	teamOne.TeamID = "team-jade"
+	err = teamService.UpdateTeam(teamOne)
+	assert.Error(t, err)
 }
 
 func TestConfirmFailedDeleteTeam(t *testing.T) {
