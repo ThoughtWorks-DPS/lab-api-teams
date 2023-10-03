@@ -13,11 +13,19 @@ type NamespaceHandler struct {
 	namespaceService service.NamespaceService
 }
 
+type NamespaceQueryRequest struct {
+	Filter   string `form:"filter"`
+	Page    int    `form:"page"`
+	PageSize int    `form:"pageSize"`
+}
+
 func NewNamespaceHandler(namespaceService service.NamespaceService) *NamespaceHandler {
 	return &NamespaceHandler{namespaceService: namespaceService}
 }
 
+
 func (handler *NamespaceHandler) GetNamespaces(c *gin.Context) {
+  
 	namespaces, err := handler.namespaceService.GetNamespaces()
 	if err != nil {
 		log.Fatalf("Failed to call GetNamespaces %v", err)

@@ -7,7 +7,7 @@ package domain
 //                       the default values used for ram, cpu, in-or-out of mesh.
 //      standard: The standard ns records represent the default namespaces provisioned
 //                       for a new team at creation.
-//      custom:    Teams my define custom namespace. By convention this is the equivalent
+//      custom:    Teams may define custom namespace. By convention this is the equivalent
 //                        of creating an 'optional' standard entry. All teams can view the list of custom
 //                        ns and choose to adopt it as well as define a new one.
 // ns-team: team-id used by normal ns entries
