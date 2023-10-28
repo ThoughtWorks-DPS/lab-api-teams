@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/domain"
-	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/service@issue-12"
+	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/service"
 	"github.com/gin-gonic/gin"
 )
 
