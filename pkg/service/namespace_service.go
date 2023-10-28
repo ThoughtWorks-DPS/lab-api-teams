@@ -4,8 +4,15 @@ import (
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/domain"
 )
 
+type NamespaceQuery struct {
+	Filters   map[string]string
+	Page      int
+	MaxResult int
+}
+
+
 type NamespaceService interface {
-	GetNamespaces() ([]domain.Namespace, error)
+	GetNamespaces(query NamespaceQuery) ([]domain.Namespace, error)
 	AddNamespace(ns domain.Namespace) error
 	GetNamespacesMaster() ([]domain.Namespace, error)
 	GetNamespacesStandard() ([]domain.Namespace, error)
@@ -22,8 +29,13 @@ func NewNamespaceService(repo domain.NamespaceRepository) NamespaceService {
 	}
 }
 
-func (s *namespaceServiceImpl) GetNamespaces() ([]domain.Namespace, error) {
+func (s *namespaceServiceImpl) GetNamespaces(query NamespaceQuery) ([]domain.Namespace, error) {
+	// [] should
+	// [] should return error if filter key is not valid
+	// [] should return error if filter value is not valid
+
 	namespaces, err := s.repo.GetNamespaces()
+
 	if err != nil {
 		return nil, err
 	}
