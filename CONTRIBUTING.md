@@ -51,5 +51,34 @@ After going through the Mural, we recommend checking out the [teams api board](h
 Any stories that are in the `Ready` column are groomed and ready to be picked up and worked on. If you have clarifying questions please ask them in the thread of the story or in gchat.
 
 
+### Workflows and pipelines
+
+This repository is trunk based, so you may contribute directly to main if you're comfortable doing so. On commit to main, our pipeline in `.circleci/config.yaml` will do a static check on the changes (fmt, lint, unit test) and do a dry run image build, after which it will trigger a release. At this point, the release pipeline picks up and attempts to deploy the new verison to dev, test, and production.
+
+You can see examples of this in action:
+- [Trunk Based Build 1.3.5](https://app.circleci.com/pipelines/github/ThoughtWorks-DPS/lab-api-teams/239/workflows/dde9f913-1266-44ae-8c01-a85394b91b04)
+- [Triggered release 1.3.5](https://app.circleci.com/pipelines/github/ThoughtWorks-DPS/lab-api-teams/240/workflows/29b55a2a-6182-4171-9b4e-91beae1746bf)
+
+You may notice that the release pipeline has an `e2e` step after each environment. These tests are maintained in a folder seperate from the `pkg` folder in `./test-e2e`. Please notice that these tests have 
+go build flags at the top:
+
+```
+//go:build e2e
+// +build e2e
+```
+
+This allows you to run the `make e2e` command, which translates to `go test ./... -tags=e2e -v`, which targets the e2e tests and ignores the other types of tests (that were run in the static stages). 
+
+The release trigger is based on tags in the Github repo. To facilitate this, in the trunk/build pipeline we use semantic release: https://github.com/ThoughtWorks-DPS/lab-api-teams/blob/main/.circleci/config.yml#L187-L200
+
+This does mean that your commits need to follow the conventions of conventional commits. You can find more details on how to do this here: https://github.com/semantic-release/semantic-release#commit-message-format
+
+The table below shows which commit message gets you which release type when `semantic-release` runs (using the default configuration):
+
+| Commit message                                                                                                                                                                                   | Release type                                                                                                    |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| `fix(pencil): stop graphite breaking when too much pressure applied`                                                                                                                             | ~~Patch~~ Fix Release                                                                                           |
+| `feat(pencil): add 'graphiteWidth' option`                                                                                                                                                       | ~~Minor~~ Feature Release                                                                                       |
+| `perf(pencil): remove graphiteWidth option`<br><br>`BREAKING CHANGE: The graphiteWidth option has been removed.`<br>`The default graphite width of 10mm is always used for performance reasons.` | ~~Major~~ Breaking Release <br /> (Note that the `BREAKING CHANGE: ` token must be in the footer of the commit) |
 
 
