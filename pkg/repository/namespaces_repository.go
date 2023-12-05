@@ -27,6 +27,18 @@ func (repo *NamespaceRepository) AddNamespace(namespace domain.Namespace) error 
 	return repo.datastore.Create(&namespace)
 }
 
+func (repo *NamespaceRepository) GetNamespacesByQuery() ([]domain.Namespace, error) {
+	var namespaces []domain.Namespace
+
+	// filter := 
+	err := repo.datastore.ReadByAttributesWithPagination(nil, &namespaces)
+
+	if err != nil {
+		return nil, err
+	}
+	return namespaces, nil
+}
+
 func (repo *NamespaceRepository) GetNamespacesByType(nsType string) ([]domain.Namespace, error) {
 	// This is a bit tricky. Since querying by type is specific to Namespace and how you'd handle this
 	// differs between Redis and SQL databases, this might require custom logic within the underlying Datadatastore.

@@ -42,7 +42,7 @@ func (handler *NamespaceHandler) GetNamespaces(c *gin.Context) {
 	// [] should set maxResult to 25 if maxResult is greatedr than 25
 
 
-	namespaceQuery := NamespaceQuery{
+	namespaceQuery := service.NamespaceQuery{
 		Filters: make(map[string]string),
 		Page: 0,
 		MaxResult: 25,
@@ -70,7 +70,8 @@ func (handler *NamespaceHandler) GetNamespaces(c *gin.Context) {
 		namespaceQuery.MaxResult = mapResultInt
 	}
   
-	namespaces, err := handler.namespaceService.GetNamespaces(namespaceQuery)
+	namespaces, err := handler.namespaceService.GetNamespaces()
+
 	if err != nil {
 		log.Fatalf("Failed to call GetNamespaces %v", err)
 	}

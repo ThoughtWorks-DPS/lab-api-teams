@@ -33,6 +33,7 @@ type Namespace struct {
 
 type NamespaceRepository interface {
 	GetNamespaces() ([]Namespace, error)
+	GetNamespacesByFilterWithPagination(filters map[string]string, page int, maxResult int) ([]Namespace, error)
 	GetNamespacesByType(nsType string) ([]Namespace, error)
 	// GetNamespaceByID(namespaceID string) (Namespace, error)
 	AddNamespace(namespace Namespace) error

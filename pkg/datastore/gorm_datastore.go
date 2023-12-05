@@ -37,6 +37,10 @@ func (g *gormDatastoreImpl) ReadByAttributes(filter Filter, out interface{}) err
 	return g.DB.Where(filter).Find(out).Error
 }
 
+func (g *gormDatastoreImpl) ReadByAttributesWithPagination(filter Filter, out interface{}, page int, maxResult int) error {
+	return g.DB.Where(filter).Limit(maxResult).Offset(page * maxResult).Find(out).Error
+}
+
 func (g *gormDatastoreImpl) Migrate(models ...interface{}) error {
 	err := g.DB.AutoMigrate(models...)
 	if err != nil {

@@ -20,7 +20,8 @@ func TestGetNamespaces(t *testing.T) {
 	}
 
 	namespaceService := NewNamespaceService(mockRepository)
-	namespaces, err := namespaceService.GetNamespaces()
+	namespaceQuery := NamespaceQuery{}
+	namespaces, err := namespaceService.GetNamespaces(namespaceQuery)
 
 	assert.NoError(t, err)
 	if len(namespaces) != 1 {

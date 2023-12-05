@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/domain"
 )
 
@@ -10,13 +11,22 @@ type NamespaceQuery struct {
 	MaxResult int
 }
 
+type InvalidPageError struct {
+	Err error
+}
+
+func (e *InvalidPageError) Error() string {
+	return e.Err.Error()
+}
+
 
 type NamespaceService interface {
-	GetNamespaces(query NamespaceQuery) ([]domain.Namespace, error)
+	GetNamespaces() ([]domain.Namespace, error)
 	AddNamespace(ns domain.Namespace) error
 	GetNamespacesMaster() ([]domain.Namespace, error)
 	GetNamespacesStandard() ([]domain.Namespace, error)
 	GetNamespacesCustom() ([]domain.Namespace, error)
+	GetNamespacesByFilterWithPagination(query NamespaceQuery) ([]domain.Namespace, error)
 }
 
 type namespaceServiceImpl struct {
@@ -29,11 +39,7 @@ func NewNamespaceService(repo domain.NamespaceRepository) NamespaceService {
 	}
 }
 
-func (s *namespaceServiceImpl) GetNamespaces(query NamespaceQuery) ([]domain.Namespace, error) {
-	// [] should
-	// [] should return error if filter key is not valid
-	// [] should return error if filter value is not valid
-
+func (s *namespaceServiceImpl) GetNamespaces() ([]domain.Namespace, error) {
 	namespaces, err := s.repo.GetNamespaces()
 
 	if err != nil {
@@ -41,6 +47,31 @@ func (s *namespaceServiceImpl) GetNamespaces(query NamespaceQuery) ([]domain.Nam
 	}
 
 	return namespaces, nil
+}
+
+func (s *namespaceServiceImpl) GetNamespacesByFilterWithPagination(query NamespaceQuery) ([]domain.Namespace, error){
+	// [] should return error if filter key is not valid
+	// [] should return error if filter value is not valid
+	if query.Page < 0 {
+		return nil, &InvalidPageError{Err: errors.New("page value is invalid")}
+	}
+
+	if query.MaxResult < -1 || query.MaxResult == 0 {
+		return nil, &InvalidPageError{Err: errors.New("maxResult value is invalid")}
+	}
+
+	filter := &domain.Namespace{}
+
+	namespaces, err := s.repo.GetNamespacesByFilterWithPagination(filter, query.Page, query.MaxResult)
+
+	// namespaces, err := s.repo.GetNamespaces()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return namespaces, nil
+
 }
 
 func (s *namespaceServiceImpl) GetNamespacesStandard() ([]domain.Namespace, error) {
