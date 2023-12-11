@@ -41,6 +41,7 @@ func (handler *TeamHandler) Readiness(c *gin.Context) {
 }
 
 func (handler *TeamHandler) GetTeams(c *gin.Context) {
+	fmt.Println(c.Request.Header)
 	teams, err := handler.teamService.GetTeams()
 	if err != nil {
 		log.Fatalf("Failed to call GetTeams %v", err)
@@ -50,6 +51,7 @@ func (handler *TeamHandler) GetTeams(c *gin.Context) {
 }
 
 func (handler *TeamHandler) AddTeam(c *gin.Context) {
+	fmt.Println(c.Request.Header)
 	var newTeam domain.Team
 
 	if err := c.BindJSON(&newTeam); err != nil {
