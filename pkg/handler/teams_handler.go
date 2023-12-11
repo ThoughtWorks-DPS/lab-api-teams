@@ -70,6 +70,7 @@ func (handler *TeamHandler) AddTeam(c *gin.Context) {
 }
 
 func (handler *TeamHandler) GetTeam(c *gin.Context) {
+	fmt.Println(c.Request.Header)
 	teamID := c.Param("teamID")
 
 	team, err := handler.teamService.GetTeam(teamID)
