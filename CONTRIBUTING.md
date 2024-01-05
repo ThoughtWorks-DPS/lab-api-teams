@@ -8,15 +8,29 @@ Links:
 ### Installing and developing the Teams API
 
 #### Prerequisites
-- Running postgres database, connection string exported to env: `DATABASE_URL`
+##### Running Postgres
+###### The not so great but totally works way
+- `brew install postgres`
+- `initdb .postgres`
+- `pg_ctl -D ./.postgres -o "-F -p 5433" start`
+- `psql postgres -p 5433`
+- ```postgresql
+  CREATE DATABASE gorm
+  CREATE USER postgres
+  ```
+
+##### Bootstrap database
+- `export DATABASE_URL="localhost"`
 - Migration script to create initial schemas: `go run ./scripts/migrate.go`
 
+##### Starting teams API
 Running the teams api (TODO: update makefile)
 ```
 go get ./...
 go run cmd/lab-api-teams/main.go
 ```
 
+##### Linting
 To run fmt, lint, test in one command
 ```
 make static
