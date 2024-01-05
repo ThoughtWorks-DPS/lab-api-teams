@@ -9,7 +9,7 @@ Links:
 
 #### Prerequisites
 ##### Running Postgres
-###### Postgres running on Host
+###### Option 1: Run Postgres directly on host
 (The not so great but totally works way)
 - `brew install postgres`
 - `initdb .postgres`
@@ -19,14 +19,11 @@ Links:
   CREATE DATABASE gorm
   CREATE USER postgres
   ```
-##### Run postgres within container (with colima on MacOS)
-- `brew install colima`
-- Install psql client and add to path:
-  - `brew install libpq`
-  - `echo 'export PATH="/opt/homebrew/opt/libpq/bin:$PATH"' >> ~/.zshrc`
-  - `source ~/.zshrc`
-- Run postgres container (unauthenticated, only use for local development):
+###### Option 2: Run Postgres Docker container (using docker client with colima on MacOS)
+- Install colima and docker cli: `brew install colima docker`
+- Run postgres container within lima VM (unauthenticated, only use for local development):
   - `colima start`
+  - `docker context use colima`
   - ```bash
     PORT=5433
     docker run --rm -d --name teams-api-db \
@@ -36,7 +33,13 @@ Links:
     -p $PORT:5432 \
     postgres
     ```
-- Confirm connectivity from host: `psql --host=localhost --port=$PORT -U postgres -d gorm`
+- Optional: Confirm db connectivity
+   - Install psql client (if you do not have one yet) and add to PATH:
+     - `brew install libpq`
+     - `echo 'export PATH="/opt/homebrew/opt/libpq/bin:$PATH"' >> ~/.zshrc`
+     - `source ~/.zshrc`
+   - Test connectivity host with psql
+     - `psql --host=localhost --port=$PORT -U postgres -d gorm`
 - Continue to "Bootstrap database" below
 
 ##### Bootstrap database
