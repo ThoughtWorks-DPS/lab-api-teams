@@ -8,15 +8,52 @@ Links:
 ### Installing and developing the Teams API
 
 #### Prerequisites
-- Running postgres database, connection string exported to env: `DATABASE_URL`
+##### Running Postgres
+###### Option 1: Run Postgres directly on host
+(The not so great but totally works way)
+- `brew install postgres`
+- `initdb .postgres`
+- `pg_ctl -D ./.postgres -o "-F -p 5433" start`
+- `psql postgres -p 5433`
+- ```postgresql
+  CREATE DATABASE gorm
+  CREATE USER postgres
+  ```
+###### Option 2: Run Postgres Docker container (using docker client with colima on MacOS)
+- Install colima and docker cli: `brew install colima docker`
+- Run postgres container within lima VM (unauthenticated, only use for local development):
+  - `colima start`
+  - `docker context use colima`
+  - ```bash
+    PORT=5433
+    docker run --rm -d --name teams-api-db \
+    -e POSTGRES_HOST_AUTH_METHOD=trust 
+    -e POSTGRES_USER=postgres \
+    -e POSTGRES_DB=gorm \
+    -p $PORT:5432 \
+    postgres
+    ```
+- Optional: Confirm db connectivity
+   - Install psql client (if you do not have one yet) and add to PATH:
+     - `brew install libpq`
+     - `echo 'export PATH="/opt/homebrew/opt/libpq/bin:$PATH"' >> ~/.zshrc`
+     - `source ~/.zshrc`
+   - Test connectivity host with psql
+     - `psql --host=localhost --port=$PORT -U postgres -d gorm`
+- Continue to "Bootstrap database" below
+
+##### Bootstrap database
+- `export DATABASE_URL="localhost"`
 - Migration script to create initial schemas: `go run ./scripts/migrate.go`
 
+##### Starting teams API
 Running the teams api (TODO: update makefile)
 ```
 go get ./...
 go run cmd/lab-api-teams/main.go
 ```
 
+##### Linting
 To run fmt, lint, test in one command
 ```
 make static

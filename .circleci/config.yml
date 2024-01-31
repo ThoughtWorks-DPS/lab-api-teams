@@ -8,7 +8,7 @@ version: 2.1
 
 orbs:
   op: twdps/onepassword@1.0.0
-  # cosign: twdps/cosign@0.1.0
+  cosign: twdps/cosign@0.1.1
   do: twdps/pipeline-events@2.0.0
 
 globals:
@@ -83,20 +83,20 @@ commands:
           env-file: << parameters.source-env >>
       - do/validate-docker-credentials
 
-  # install-cosign:
-  #   description: Install cosign
-  #   parameters:
-  #     cosign-version:
-  #       description: Must provide the release version of cosign
-  #       type: string
-  #       default: v1.6.0
-  #   steps:
-  #     - run:
-  #         name: Install cosign
-  #         command: |
-  #           wget "https://github.com/sigstore/cosign/releases/download/<< parameters.cosign-version >>/cosign-linux-amd64"
-  #           sudo mv cosign-linux-amd64 /usr/local/bin/cosign
-  #           sudo chmod +x /usr/local/bin/cosign
+  install-cosign:
+    description: Install cosign
+    parameters:
+      cosign-version:
+        description: Must provide the release version of cosign
+        type: string
+        default: v1.6.0
+    steps:
+      - run:
+          name: Install cosign
+          command: |
+            wget "https://github.com/sigstore/cosign/releases/download/<< parameters.cosign-version >>/cosign-linux-amd64"
+            sudo mv cosign-linux-amd64 /usr/local/bin/cosign
+            sudo chmod +x /usr/local/bin/cosign
 
 executors:
   amd64:
@@ -203,23 +203,24 @@ jobs:
     executor: amd64
     steps:
       - checkout
-      # - cosign/install
+      - cosign/install:
+          cosign-version: v1.8.0
       - set-environment:
           executor: amd64
-      # - run:
-      #     name: fetch keys for signing
-      #     command: |
-      #       echo "op://empc-lab/svc-cosign-private-key/notesPlain" > cosign.key.env
-      #       echo "op://empc-lab/svc-cosign-public-key/notesPlain" > cosign.pub.env
-      #       op inject -i cosign.key.env -o cosign.key
-      #       op inject -i cosign.pub.env -o cosign.pub
+      - run:
+          name: fetch keys for signing
+          command: |
+            echo "op://empc-lab/svc-cosign-private-key/notesPlain" > cosign.key.env
+            echo "op://empc-lab/svc-cosign-public-key/notesPlain" > cosign.pub.env
+            op inject -i cosign.key.env -o cosign.key
+            op inject -i cosign.pub.env -o cosign.pub
       - run:
           name: Use goreleaser to build and publish executables
           command: |
             curl -sL https://git.io/goreleaser | bash
-      # - run: 
-      #     name: validate signature
-      #     command: cosign verify -key cosign.pub twdps/lab-api-teams
+      - run: 
+          name: validate signature
+          command: cosign verify -key cosign.pub twdps/lab-api-teams
       - do/prune-dockerhub:
           repository: twdps/lab-api-teams
           tag-filter: dev
