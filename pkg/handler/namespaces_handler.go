@@ -2,8 +2,8 @@ package handler
 
 import (
 	"log"
-	"strconv"
 	"net/http"
+	"strconv"
 
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/domain"
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/service"
@@ -27,50 +27,45 @@ func NewNamespaceHandler(namespaceService service.NamespaceService) *NamespaceHa
 // /platform/namespaces?filters[team]=marketplace-demo&filters[type]=standard&page=0&maxResults=25
 func (handler *NamespaceHandler) GetNamespaces(c *gin.Context) {
 
-	// [] should return namespaces based on filters
-
-	// [] should query namespace without filters if filters is not provided
-
-	// [] should return all namespace if maxResult equals -1
-
-	// [] should return 400 if page value is not a integer
-
-	// [] should return 400 if maxResult value is not a integer
-
-	// [] should set maxResult to 25 if maxResult is not provided
-
-	// [] should set maxResult to 25 if maxResult is greatedr than 25
-
-
-	namespaceQuery := service.NamespaceQuery{
-		Filters: make(map[string]string),
-		Page: 0,
-		MaxResult: 25,
+	namespaceQuery := service.Query{
+		Filters:   make(map[string]string),
+		Page:      0,  // should set page to 0 if page is not provided
+		MaxResult: 25, // should set maxResult to 25 if maxResult is not provided
 	}
-	
-	filters, ok := c.GetQueryMap("filters")
 
-	if ok {
+	// should return namespaces based on filters
+	filters, exist := c.GetQueryMap("filters")
+	if exist {
 		namespaceQuery.Filters = filters
 	}
 
-	page := c.Query("page")
-
-	pageInt, err := strconv.Atoi(page)
-
-	if err == nil {
+	page, exist := c.GetQuery("page")
+	if exist {
+		pageInt, err := strconv.Atoi(page)
+		if err != nil {
+			// should return 400 if page value is not a integer
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid page value"})
+			return
+		}
 		namespaceQuery.Page = pageInt
 	}
 
-	mapResult := c.Query("maxResults")
+	mapResult, exist := c.GetQuery("maxResults")
+	if exist {
+		mapResultInt, err := strconv.Atoi(mapResult)
 
-	mapResultInt, err := strconv.Atoi(mapResult)
-
-	if err == nil {
-		namespaceQuery.MaxResult = mapResultInt
+		if err != nil {
+			// should return 400 if maxResult value is not a integer
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid maxResult value"})
+			return
+		}
+		// should set maxResult to 25 if maxResult is greatedr than 25
+		if mapResultInt < namespaceQuery.MaxResult {
+			namespaceQuery.MaxResult = mapResultInt
+		}
 	}
-  
-	namespaces, err := handler.namespaceService.GetNamespaces()
+
+	namespaces, err := handler.namespaceService.GetNamespacesByFilterWithPagination(namespaceQuery)
 
 	if err != nil {
 		log.Fatalf("Failed to call GetNamespaces %v", err)

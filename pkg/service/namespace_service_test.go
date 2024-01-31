@@ -11,7 +11,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-
 func TestGetNamespaces(t *testing.T) {
 	mockRepository := &mock.MockNamespaceRepository{
 		Namespaces: []domain.Namespace{
@@ -20,8 +19,7 @@ func TestGetNamespaces(t *testing.T) {
 	}
 
 	namespaceService := NewNamespaceService(mockRepository)
-	namespaceQuery := NamespaceQuery{}
-	namespaces, err := namespaceService.GetNamespaces(namespaceQuery)
+	namespaces, err := namespaceService.GetNamespaces()
 
 	assert.NoError(t, err)
 	if len(namespaces) != 1 {

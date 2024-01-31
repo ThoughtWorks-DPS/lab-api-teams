@@ -13,6 +13,10 @@ func (m *MockNamespaceRepository) GetNamespaces() ([]domain.Namespace, error) {
 	return m.Namespaces, nil
 }
 
+func (m *MockNamespaceRepository) GetNamespacesByFilterWithPagination(filters map[string]string, page int, maxResult int) ([]domain.Namespace, error) {
+	return nil, fmt.Errorf("not implemented!")
+}
+
 func (m *MockNamespaceRepository) GetNamespace(id string) (domain.Namespace, error) {
 	for _, namespace := range m.Namespaces {
 		if id == namespace.NamespaceID {

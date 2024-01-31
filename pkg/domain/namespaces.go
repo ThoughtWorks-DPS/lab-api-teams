@@ -31,15 +31,7 @@ type Namespace struct {
 	NamespaceFromDefault bool   `json:"namespaceFromDefault"`
 }
 
-type NamespaceRepository interface {
-	GetNamespaces() ([]Namespace, error)
-	GetNamespacesByFilterWithPagination(filters map[string]string, page int, maxResult int) ([]Namespace, error)
-	GetNamespacesByType(nsType string) ([]Namespace, error)
-	// GetNamespaceByID(namespaceID string) (Namespace, error)
-	AddNamespace(namespace Namespace) error
-	// UpdateNamespace(namespace Namespace) error
-	// RemoveNamespace(namespace Namespace) (Namespace, error)
-}
+
 
 // TODO the below functions (and other business logic specific api calls) will move to service layer
 // GetNamespacesMaster() ([]Namespace, error)

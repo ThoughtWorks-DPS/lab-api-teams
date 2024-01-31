@@ -2,23 +2,11 @@ package service
 
 import (
 	"errors"
+	"slices"
+
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/domain"
+	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/repository"
 )
-
-type NamespaceQuery struct {
-	Filters   map[string]string
-	Page      int
-	MaxResult int
-}
-
-type InvalidPageError struct {
-	Err error
-}
-
-func (e *InvalidPageError) Error() string {
-	return e.Err.Error()
-}
-
 
 type NamespaceService interface {
 	GetNamespaces() ([]domain.Namespace, error)
@@ -26,14 +14,14 @@ type NamespaceService interface {
 	GetNamespacesMaster() ([]domain.Namespace, error)
 	GetNamespacesStandard() ([]domain.Namespace, error)
 	GetNamespacesCustom() ([]domain.Namespace, error)
-	GetNamespacesByFilterWithPagination(query NamespaceQuery) ([]domain.Namespace, error)
+	GetNamespacesByFilterWithPagination(query Query) ([]domain.Namespace, error)
 }
 
 type namespaceServiceImpl struct {
-	repo domain.NamespaceRepository
+	repo repository.NamespaceRepository
 }
 
-func NewNamespaceService(repo domain.NamespaceRepository) NamespaceService {
+func NewNamespaceService(repo repository.NamespaceRepository) NamespaceService {
 	return &namespaceServiceImpl{
 		repo: repo,
 	}
@@ -49,9 +37,8 @@ func (s *namespaceServiceImpl) GetNamespaces() ([]domain.Namespace, error) {
 	return namespaces, nil
 }
 
-func (s *namespaceServiceImpl) GetNamespacesByFilterWithPagination(query NamespaceQuery) ([]domain.Namespace, error){
-	// [] should return error if filter key is not valid
-	// [] should return error if filter value is not valid
+func (s *namespaceServiceImpl) GetNamespacesByFilterWithPagination(query Query) ([]domain.Namespace, error) {
+
 	if query.Page < 0 {
 		return nil, &InvalidPageError{Err: errors.New("page value is invalid")}
 	}
@@ -60,11 +47,20 @@ func (s *namespaceServiceImpl) GetNamespacesByFilterWithPagination(query Namespa
 		return nil, &InvalidPageError{Err: errors.New("maxResult value is invalid")}
 	}
 
-	filter := &domain.Namespace{}
+	legalFilters := []string{"team", "type"}
+	illegalFilters := []string{}
 
-	namespaces, err := s.repo.GetNamespacesByFilterWithPagination(filter, query.Page, query.MaxResult)
+	for k := range query.Filters {
+		contains := slices.Contains(legalFilters, k)
+		if contains {
+			illegalFilters = append(illegalFilters, k)
+		}
+	}
+	if len(illegalFilters) > 0 {
+		return nil, &InvalidFilterError{Err: errors.New("invalid filter. only allow filter by team or type")}
+	}
 
-	// namespaces, err := s.repo.GetNamespaces()
+	namespaces, err := s.repo.GetNamespacesByFilterWithPagination(query.Filters, query.Page, query.MaxResult)
 
 	if err != nil {
 		return nil, err

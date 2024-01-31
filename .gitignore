@@ -19,3 +19,5 @@ deploy.yml
 semantic-release
 semver
 yugabyte/*.yaml
+
+gorm.db
