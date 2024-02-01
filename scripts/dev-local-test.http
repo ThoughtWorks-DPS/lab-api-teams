@@ -20,8 +20,9 @@ POST http://localhost:8080/namespaces HTTP/1.1
 content-type: application/json
 
 {
-    "NamespaceID": "default",
-    "NamespaceType": "master", 
+    "NamespaceID": "account-dev",
+    "NamespaceType": "standard", 
+    "NamespaceTeamID": "team-sapphire",
     "NamespaceRam": 32,
     "NamespaceCpu": 12, 
     "NamespaceInMesh": true,
@@ -45,5 +46,5 @@ GET http://localhost:8080/namespaces?page=1&maxResults=10
 content-type: application/json
 
 ### List namespaces by filter with paginator
-GET http://localhost:8080/namespaces?filters[namespace_type]=master&page=1&maxResults=10
+GET http://localhost:8080/namespaces?filters[namespace_team_id]=team-sapphire&page=1&maxResults=10
 content-type: application/json
