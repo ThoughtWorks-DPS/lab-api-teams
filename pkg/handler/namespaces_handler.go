@@ -24,11 +24,10 @@ func NewNamespaceHandler(namespaceService service.NamespaceService) *NamespaceHa
 	return &NamespaceHandler{namespaceService: namespaceService}
 }
 
-// /platform/namespaces?filters[team]=marketplace-demo&filters[type]=standard&page=0&maxResults=25
+// /namespaces?filters[team]=marketplace-demo&filters[type]=standard&page=0&maxResults=25
 func (handler *NamespaceHandler) GetNamespaces(c *gin.Context) {
 
 	namespaceQuery := service.Query{
-		Filters:   make(map[string]string),
 		Page:      0,  // should set page to 0 if page is not provided
 		MaxResult: 25, // should set maxResult to 25 if maxResult is not provided
 	}
@@ -36,7 +35,11 @@ func (handler *NamespaceHandler) GetNamespaces(c *gin.Context) {
 	// should return namespaces based on filters
 	filters, exist := c.GetQueryMap("filters")
 	if exist {
-		namespaceQuery.Filters = filters
+		f := make(map[string]interface{})
+		for k, v := range filters {
+			f[k] = v
+		}
+		namespaceQuery.Filters = f
 	}
 
 	page, exist := c.GetQuery("page")

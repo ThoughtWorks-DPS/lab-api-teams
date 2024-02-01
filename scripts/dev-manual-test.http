@@ -32,3 +32,10 @@ content-type: application/json
 GET http://localhost:8080/namespaces HTTP/1.1
 content-type: application/json
 
+### List namespace by filters
+GET http://localhost:8080/namespaces?filters[namespace_type]=master
+content-type: application/json
+
+### List namespace with paginator
+GET http://localhost:8080/namespaces?page=1&maxResult=10
+content-type: application/json

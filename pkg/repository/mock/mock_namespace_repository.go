@@ -13,7 +13,7 @@ func (m *MockNamespaceRepository) GetNamespaces() ([]domain.Namespace, error) {
 	return m.Namespaces, nil
 }
 
-func (m *MockNamespaceRepository) GetNamespacesByFilterWithPagination(filters map[string]string, page int, maxResult int) ([]domain.Namespace, error) {
+func (m *MockNamespaceRepository) GetNamespacesByFilterWithPagination(filters map[string]interface{}, page int, maxResult int) ([]domain.Namespace, error) {
 	return nil, fmt.Errorf("not implemented!")
 }
 
