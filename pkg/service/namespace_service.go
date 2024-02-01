@@ -14,7 +14,7 @@ type NamespaceService interface {
 	GetNamespacesMaster() ([]domain.Namespace, error)
 	GetNamespacesStandard() ([]domain.Namespace, error)
 	GetNamespacesCustom() ([]domain.Namespace, error)
-	GetNamespacesByFilterWithPagination(query Query) ([]domain.Namespace, error)
+	GetNamespacesByFilterWithPagination(query Query) (*ListNamespaceResponse, error)
 }
 
 type namespaceServiceImpl struct {
@@ -37,13 +37,13 @@ func (s *namespaceServiceImpl) GetNamespaces() ([]domain.Namespace, error) {
 	return namespaces, nil
 }
 
-func (s *namespaceServiceImpl) GetNamespacesByFilterWithPagination(query Query) ([]domain.Namespace, error) {
+func (s *namespaceServiceImpl) GetNamespacesByFilterWithPagination(query Query) (*ListNamespaceResponse, error) {
 
 	if query.Page < 0 {
 		return nil, &InvalidPageError{Err: errors.New("page value is invalid")}
 	}
 
-	if query.MaxResult < -1 || query.MaxResult == 0 {
+	if query.MaxResults < -1 || query.MaxResults == 0 {
 		return nil, &InvalidPageError{Err: errors.New("maxResult value is invalid")}
 	}
 
@@ -60,13 +60,17 @@ func (s *namespaceServiceImpl) GetNamespacesByFilterWithPagination(query Query) 
 		return nil, &InvalidFilterError{Err: errors.New("invalid filter. only allow filter by team or type")}
 	}
 
-	namespaces, err := s.repo.GetNamespacesByFilterWithPagination(query.Filters, query.Page, query.MaxResult)
+	namespaces, err := s.repo.GetNamespacesByFilterWithPagination(query.Filters, query.Page, query.MaxResults)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return namespaces, nil
+	return &ListNamespaceResponse{
+		Items: namespaces,
+		Page: query.Page,
+		MaxResults: query.MaxResults,
+	}, nil
 
 }
 
