@@ -157,6 +157,6 @@ func (r *redisDatastoreImpl) ReadByAttributes(filter Filter, out interface{}) er
 	return nil
 }
 
-func (g *redisDatastoreImpl) ReadByAttributesWithPagination(filter map[string]interface{}, out interface{}, page int, maxResult int) error {
+func (g *redisDatastoreImpl) ReadByAttributesWithPagination(filter map[string]interface{}, out interface{}, page int, maxResults int) error {
 	return fmt.Errorf("not implemented")
 }

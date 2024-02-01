@@ -44,7 +44,7 @@ func (s *namespaceServiceImpl) GetNamespacesByFilterWithPagination(query Query) 
 	}
 
 	if query.MaxResults < -1 || query.MaxResults == 0 {
-		return nil, &InvalidPageError{Err: errors.New("maxResult value is invalid")}
+		return nil, &InvalidPageError{Err: errors.New("maxResults value is invalid")}
 	}
 
 	legalFilters := []string{"team", "type"}
@@ -67,8 +67,8 @@ func (s *namespaceServiceImpl) GetNamespacesByFilterWithPagination(query Query) 
 	}
 
 	return &ListNamespaceResponse{
-		Items: namespaces,
-		Page: query.Page,
+		Items:      namespaces,
+		Page:       query.Page,
 		MaxResults: query.MaxResults,
 	}, nil
 

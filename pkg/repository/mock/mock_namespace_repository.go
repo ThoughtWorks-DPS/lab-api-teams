@@ -2,6 +2,7 @@ package mock
 
 import (
 	"fmt"
+
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/domain"
 )
 
@@ -13,7 +14,7 @@ func (m *MockNamespaceRepository) GetNamespaces() ([]domain.Namespace, error) {
 	return m.Namespaces, nil
 }
 
-func (m *MockNamespaceRepository) GetNamespacesByFilterWithPagination(filters map[string]interface{}, page int, maxResult int) ([]domain.Namespace, error) {
+func (m *MockNamespaceRepository) GetNamespacesByFilterWithPagination(filters map[string]interface{}, page int, maxResults int) ([]domain.Namespace, error) {
 	return nil, fmt.Errorf("not implemented!")
 }
 

@@ -53,9 +53,9 @@ func (g *gormDatastoreImpl) ReadByAttributes(filter Filter, out interface{}) err
 	return g.DB.Where(filter).Find(out).Error
 }
 
-func (g *gormDatastoreImpl) ReadByAttributesWithPagination(filter map[string]interface{}, out interface{}, page int, maxResult int) error {
-	offset := (page - 1) * maxResult
-	limit := maxResult
+func (g *gormDatastoreImpl) ReadByAttributesWithPagination(filter map[string]interface{}, out interface{}, page int, maxResults int) error {
+	offset := (page - 1) * maxResults
+	limit := maxResults
 	return g.DB.Where(filter).Limit(limit).Offset(offset).Find(out).Error
 }
 

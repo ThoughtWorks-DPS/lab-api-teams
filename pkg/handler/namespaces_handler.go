@@ -15,9 +15,9 @@ type NamespaceHandler struct {
 }
 
 type NamespaceQueryResult struct {
-	Items     []domain.Namespace
-	Page      int
-	MaxResult int
+	Items      []domain.Namespace
+	Page       int
+	MaxResults int
 }
 
 func NewNamespaceHandler(namespaceService service.NamespaceService) *NamespaceHandler {
@@ -27,8 +27,8 @@ func NewNamespaceHandler(namespaceService service.NamespaceService) *NamespaceHa
 func (handler *NamespaceHandler) GetNamespaces(c *gin.Context) {
 
 	namespaceQuery := service.Query{
-		Page:      0,  // should set page to 0 if page is not provided
-		MaxResults: 25, // should set maxResult to 25 if maxResult is not provided
+		Page:       0,  // should set page to 0 if page is not provided
+		MaxResults: 25, // should set maxResults to 25 if maxResults is not provided
 	}
 
 	// should return namespaces based on filters
@@ -57,11 +57,11 @@ func (handler *NamespaceHandler) GetNamespaces(c *gin.Context) {
 		mapResultInt, err := strconv.Atoi(mapResult)
 
 		if err != nil {
-			// should return 400 if maxResult value is not a integer
-			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid maxResult value"})
+			// should return 400 if maxResults value is not a integer
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid maxResults value"})
 			return
 		}
-		// should set maxResult to 25 if maxResult is greatedr than 25
+		// should set maxResults to 25 if maxResults is greatedr than 25
 		if mapResultInt < namespaceQuery.MaxResults {
 			namespaceQuery.MaxResults = mapResultInt
 		}

@@ -7,7 +7,7 @@ import (
 
 type NamespaceRepository interface {
 	GetNamespaces() ([]domain.Namespace, error)
-	GetNamespacesByFilterWithPagination(filters map[string]interface{}, page int, maxResult int) ([]domain.Namespace, error)
+	GetNamespacesByFilterWithPagination(filters map[string]interface{}, page int, maxResults int) ([]domain.Namespace, error)
 	GetNamespacesByType(nsType string) ([]domain.Namespace, error)
 	// GetNamespaceByID(namespaceID string) (Namespace, error)
 	AddNamespace(namespace domain.Namespace) error
@@ -37,10 +37,10 @@ func (repo *NamespaceRepositoryImpl) AddNamespace(namespace domain.Namespace) er
 	return repo.datastore.Create(&namespace)
 }
 
-func (repo *NamespaceRepositoryImpl) GetNamespacesByFilterWithPagination(filters map[string]interface{}, page int, maxResult int) ([]domain.Namespace, error) {
+func (repo *NamespaceRepositoryImpl) GetNamespacesByFilterWithPagination(filters map[string]interface{}, page int, maxResults int) ([]domain.Namespace, error) {
 	var namespaces []domain.Namespace
 
-	err := repo.datastore.ReadByAttributesWithPagination(filters, &namespaces, page, maxResult)
+	err := repo.datastore.ReadByAttributesWithPagination(filters, &namespaces, page, maxResults)
 	if err != nil {
 		return nil, err
 	}
