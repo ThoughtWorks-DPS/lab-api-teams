@@ -15,7 +15,7 @@ content-type: application/json
 ### List teams
 GET http://localhost:8080/teams HTTP/1.1
 
-### Create a namespace
+### Create a namespace for team-sapphire
 POST http://localhost:8080/namespaces HTTP/1.1
 content-type: application/json
 
