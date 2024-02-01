@@ -2,11 +2,14 @@ package service
 
 import (
 	"errors"
-	"slices"
 
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/domain"
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/repository"
 )
+
+const NAMESACE_TYPE_MASTER = "master"
+const NAMESPACE_TYPE_STANDARD = "standard"
+const NAMESACE_TYPE_CUSTOM = "custom"
 
 type NamespaceService interface {
 	GetNamespaces() ([]domain.Namespace, error)
@@ -47,19 +50,6 @@ func (s *namespaceServiceImpl) GetNamespacesByFilterWithPagination(query Query) 
 		return nil, &InvalidPageError{Err: errors.New("maxResults value is invalid")}
 	}
 
-	legalFilters := []string{"team", "type"}
-	illegalFilters := []string{}
-
-	for k := range query.Filters {
-		contains := slices.Contains(legalFilters, k)
-		if contains {
-			illegalFilters = append(illegalFilters, k)
-		}
-	}
-	if len(illegalFilters) > 0 {
-		return nil, &InvalidFilterError{Err: errors.New("invalid filter. only allow filter by team or type")}
-	}
-
 	namespaces, err := s.repo.GetNamespacesByFilterWithPagination(query.Filters, query.Page, query.MaxResults)
 
 	if err != nil {
@@ -75,7 +65,7 @@ func (s *namespaceServiceImpl) GetNamespacesByFilterWithPagination(query Query) 
 }
 
 func (s *namespaceServiceImpl) GetNamespacesStandard() ([]domain.Namespace, error) {
-	namespaces, err := s.repo.GetNamespacesByType("standard")
+	namespaces, err := s.repo.GetNamespacesByType(NAMESPACE_TYPE_STANDARD)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +74,7 @@ func (s *namespaceServiceImpl) GetNamespacesStandard() ([]domain.Namespace, erro
 }
 
 func (s *namespaceServiceImpl) GetNamespacesCustom() ([]domain.Namespace, error) {
-	namespaces, err := s.repo.GetNamespacesByType("custom")
+	namespaces, err := s.repo.GetNamespacesByType(NAMESACE_TYPE_CUSTOM)
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +83,7 @@ func (s *namespaceServiceImpl) GetNamespacesCustom() ([]domain.Namespace, error)
 }
 
 func (s *namespaceServiceImpl) GetNamespacesMaster() ([]domain.Namespace, error) {
-	namespaces, err := s.repo.GetNamespacesByType("master")
+	namespaces, err := s.repo.GetNamespacesByType(NAMESACE_TYPE_MASTER)
 	if err != nil {
 		return nil, err
 	}
