@@ -159,7 +159,7 @@ jobs:
             GOLANGCI_LINT_CACHE: /home/circleci/.cache/lint
           command: |
             golangci-lint version
-            golangci-lint run ./...  -v
+            golangci-lint run ./...  -v --timeout 5m
       - save_cache:
           key: go-mod-{{ arch }}-{{ checksum "go.sum"  }}
           paths:
