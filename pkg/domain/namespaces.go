@@ -7,7 +7,7 @@ package domain
 //                       the default values used for ram, cpu, in-or-out of mesh.
 //      standard: The standard ns records represent the default namespaces provisioned
 //                       for a new team at creation.
-//      custom:    Teams my define custom namespace. By convention this is the equivalent
+//      custom:    Teams may define custom namespace. By convention this is the equivalent
 //                        of creating an 'optional' standard entry. All teams can view the list of custom
 //                        ns and choose to adopt it as well as define a new one.
 // ns-team: team-id used by normal ns entries
@@ -31,14 +31,7 @@ type Namespace struct {
 	NamespaceFromDefault bool   `json:"namespaceFromDefault"`
 }
 
-type NamespaceRepository interface {
-	GetNamespaces() ([]Namespace, error)
-	GetNamespacesByType(nsType string) ([]Namespace, error)
-	// GetNamespaceByID(namespaceID string) (Namespace, error)
-	AddNamespace(namespace Namespace) error
-	// UpdateNamespace(namespace Namespace) error
-	// RemoveNamespace(namespace Namespace) (Namespace, error)
-}
+
 
 // TODO the below functions (and other business logic specific api calls) will move to service layer
 // GetNamespacesMaster() ([]Namespace, error)

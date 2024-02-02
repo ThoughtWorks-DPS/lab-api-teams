@@ -5,15 +5,25 @@ import (
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/domain"
 )
 
-type NamespaceRepository struct {
+type NamespaceRepository interface {
+	GetNamespaces() ([]domain.Namespace, error)
+	GetNamespacesByFilterWithPagination(filters map[string]interface{}, page int, maxResults int) ([]domain.Namespace, error)
+	GetNamespacesByType(nsType string) ([]domain.Namespace, error)
+	// GetNamespaceByID(namespaceID string) (Namespace, error)
+	AddNamespace(namespace domain.Namespace) error
+	// UpdateNamespace(namespace Namespace) error
+	// RemoveNamespace(namespace Namespace) (Namespace, error)
+}
+
+type NamespaceRepositoryImpl struct {
 	datastore datastore.Datastore
 }
 
-func NewNamespaceRepository(store datastore.Datastore) *NamespaceRepository {
-	return &NamespaceRepository{datastore: store}
+func NewNamespaceRepository(store datastore.Datastore) NamespaceRepository {
+	return &NamespaceRepositoryImpl{datastore: store}
 }
 
-func (repo *NamespaceRepository) GetNamespaces() ([]domain.Namespace, error) {
+func (repo *NamespaceRepositoryImpl) GetNamespaces() ([]domain.Namespace, error) {
 	var namespaces []domain.Namespace
 	err := repo.datastore.ReadAll(&namespaces)
 	if err != nil {
@@ -23,11 +33,22 @@ func (repo *NamespaceRepository) GetNamespaces() ([]domain.Namespace, error) {
 	return namespaces, nil
 }
 
-func (repo *NamespaceRepository) AddNamespace(namespace domain.Namespace) error {
+func (repo *NamespaceRepositoryImpl) AddNamespace(namespace domain.Namespace) error {
 	return repo.datastore.Create(&namespace)
 }
 
-func (repo *NamespaceRepository) GetNamespacesByType(nsType string) ([]domain.Namespace, error) {
+func (repo *NamespaceRepositoryImpl) GetNamespacesByFilterWithPagination(filters map[string]interface{}, page int, maxResults int) ([]domain.Namespace, error) {
+	var namespaces []domain.Namespace
+
+	err := repo.datastore.ReadByAttributesWithPagination(filters, &namespaces, page, maxResults)
+	if err != nil {
+		return nil, err
+	}
+
+	return namespaces, nil
+}
+
+func (repo *NamespaceRepositoryImpl) GetNamespacesByType(nsType string) ([]domain.Namespace, error) {
 	// This is a bit tricky. Since querying by type is specific to Namespace and how you'd handle this
 	// differs between Redis and SQL databases, this might require custom logic within the underlying Datadatastore.
 	// For now, let's mock it up and you can implement the specifics.
@@ -44,7 +65,7 @@ func (repo *NamespaceRepository) GetNamespacesByType(nsType string) ([]domain.Na
 	return namespaces, nil
 }
 
-func (repo *NamespaceRepository) GetNamespaceByID(namespaceID string) (domain.Namespace, error) {
+func (repo *NamespaceRepositoryImpl) GetNamespaceByID(namespaceID string) (domain.Namespace, error) {
 	var namespace domain.Namespace
 	err := repo.datastore.ReadByID(namespaceID, &namespace)
 	if err != nil {
@@ -54,10 +75,10 @@ func (repo *NamespaceRepository) GetNamespaceByID(namespaceID string) (domain.Na
 	return namespace, nil
 }
 
-func (repo *NamespaceRepository) UpdateNamespace(namespace domain.Namespace) error {
+func (repo *NamespaceRepositoryImpl) UpdateNamespace(namespace domain.Namespace) error {
 	return repo.datastore.Update(&namespace)
 }
 
-func (repo *NamespaceRepository) RemoveNamespace(namespace domain.Namespace) error {
+func (repo *NamespaceRepositoryImpl) RemoveNamespace(namespace domain.Namespace) error {
 	return repo.datastore.Delete(&namespace)
 }

@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -20,21 +21,42 @@ type gormDatastoreImpl struct {
 }
 
 func NewGormDatastore(domain string) GormDatastore {
-	host := os.Getenv("DATABASE_URL")
-	dsn := fmt.Sprintf("host=%s user=postgres dbname=gorm port=5433 sslmode=disable TimeZone=UTC", host)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		panic("failed to connect database")
-	}
 
-	return &gormDatastoreImpl{
-		DB:     *db,
-		domain: domain,
+	switch env := os.Getenv("APP_ENV"); env {
+	case "development":
+		db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
+		if err != nil {
+			panic("failed to connect database")
+		}
+
+		return &gormDatastoreImpl{
+			DB:     *db,
+			domain: domain,
+		}
+	default:
+		host := os.Getenv("DATABASE_URL")
+		dsn := fmt.Sprintf("host=%s user=postgres dbname=gorm port=5433 sslmode=disable TimeZone=UTC", host)
+		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err != nil {
+			panic("failed to connect database")
+		}
+
+		return &gormDatastoreImpl{
+			DB:     *db,
+			domain: domain,
+		}
+
 	}
 }
 
 func (g *gormDatastoreImpl) ReadByAttributes(filter Filter, out interface{}) error {
 	return g.DB.Where(filter).Find(out).Error
+}
+
+func (g *gormDatastoreImpl) ReadByAttributesWithPagination(filter map[string]interface{}, out interface{}, page int, maxResults int) error {
+	offset := (page - 1) * maxResults
+	limit := maxResults
+	return g.DB.Where(filter).Limit(limit).Offset(offset).Find(out).Error
 }
 
 func (g *gormDatastoreImpl) Migrate(models ...interface{}) error {
