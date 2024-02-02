@@ -42,7 +42,7 @@ func (s *namespaceServiceImpl) GetNamespaces() ([]domain.Namespace, error) {
 
 func (s *namespaceServiceImpl) GetNamespacesByFilterWithPagination(query Query) (*ListNamespaceResponse, error) {
 
-	if query.Page < 0 {
+	if query.Page < 1 {
 		return nil, &InvalidPageError{Err: errors.New("page value is invalid")}
 	}
 

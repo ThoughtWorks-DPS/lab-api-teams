@@ -14,12 +14,6 @@ type NamespaceHandler struct {
 	namespaceService service.NamespaceService
 }
 
-type NamespaceQueryResult struct {
-	Items      []domain.Namespace
-	Page       int
-	MaxResults int
-}
-
 func NewNamespaceHandler(namespaceService service.NamespaceService) *NamespaceHandler {
 	return &NamespaceHandler{namespaceService: namespaceService}
 }
@@ -27,7 +21,7 @@ func NewNamespaceHandler(namespaceService service.NamespaceService) *NamespaceHa
 func (handler *NamespaceHandler) GetNamespaces(c *gin.Context) {
 
 	namespaceQuery := service.Query{
-		Page:       0,  // should set page to 0 if page is not provided
+		Page:       1,  // should set page to 0 if page is not provided
 		MaxResults: 25, // should set maxResults to 25 if maxResults is not provided
 	}
 
