@@ -53,6 +53,4 @@ helm upgrade --install yugabyte yugabytedb/yugabyte \
 #     placement_region: "${AWS_DEFAULT_REGION}"
 #     placement_zone: "${AWS_DEFAULT_REGION}a"
 
-# kubectl exec -n ${NAMESPACE} -it yb-tserver-0 -- ysqlsh  -c 'create database gorm;' 
-
-
+kubectl exec -n ${NAMESPACE} -it yb-tserver-0 -- ysqlsh  -c 'SELECT 'CREATE DATABASE gorm' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'gorm')\gexec' 
