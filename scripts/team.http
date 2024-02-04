@@ -1,0 +1,16 @@
+### Create a team
+POST http://localhost:8080/teams HTTP/1.1
+content-type: application/json
+
+{
+    "TeamID": "team-sapphire",
+    "TeamType": "normal",
+    "TeamDescription": "Sapphire frontend team",
+    "TeamRAM": 32,
+    "TeamCPU": 12,
+    "TeamRamLimit": 64,
+    "TeamCpuLimit": 24
+}
+
+### List teams
+GET http://localhost:8080/teams HTTP/1.1
