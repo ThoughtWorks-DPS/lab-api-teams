@@ -254,7 +254,6 @@ jobs:
                 --values charts/lab-api-teams-chart/values.yaml \
                 --values charts/lab-api-teams-chart/values-<< parameters.namespace >>.yaml \
                 --set image.tag=<< parameters.tag >>
-                --debug
   post-deploy-e2e:
     parameters:
       namespace:
