@@ -249,7 +249,7 @@ jobs:
           name: deploy teams api
           command: |
             helm upgrade lab-api-teams charts/lab-api-teams-chart \
-                 --install --atomic --timeout 60s \
+                 --install --atomic --timeout 5m \
                  --namespace twdps-core-labs-team-<< parameters.namespace>> \
                  --values charts/lab-api-teams-chart/values.yaml \
                  --values charts/lab-api-teams-chart/values-<< parameters.namespace >>.yaml \
