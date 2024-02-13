@@ -14,3 +14,10 @@ content-type: application/json
 
 ### List teams
 GET http://localhost:8080/teams HTTP/1.1
+
+
+### Delete a team
+DELETE http://localhost:8080/teams/team-sapphire
+
+### Confirm to delete a team
+DELETE http://localhost:8080/teams/team-sapphire/confirm

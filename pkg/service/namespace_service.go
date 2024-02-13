@@ -1,8 +1,6 @@
 package service
 
 import (
-	"errors"
-
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/domain"
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/repository"
 )
@@ -43,11 +41,11 @@ func (s *namespaceServiceImpl) GetNamespaces() ([]domain.Namespace, error) {
 func (s *namespaceServiceImpl) GetNamespacesByFilterWithPagination(query Query) (*ListNamespaceResponse, error) {
 
 	if query.Page < 1 {
-		return nil, &InvalidPageError{Err: errors.New("page value is invalid")}
+		return nil, NewInvalidPageError()
 	}
 
-	if query.MaxResults < -1 || query.MaxResults == 0 {
-		return nil, &InvalidPageError{Err: errors.New("maxResults value is invalid")}
+	if query.MaxResults < -1 || query.MaxResults == 0 || query.MaxResults > MAX_RESULTS {
+		return nil, &InvalidPageError{"maxResults value is invalid"}
 	}
 
 	namespaces, err := s.repo.GetNamespacesByFilterWithPagination(query.Filters, query.Page, query.MaxResults)
