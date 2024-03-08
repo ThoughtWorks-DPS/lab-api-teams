@@ -9,7 +9,7 @@ type NamespaceRepository interface {
 	GetNamespaces() ([]domain.Namespace, error)
 	GetNamespacesByFilterWithPagination(filters map[string]interface{}, page int, maxResults int) ([]domain.Namespace, error)
 	GetNamespacesByType(nsType string) ([]domain.Namespace, error)
-	// GetNamespaceByID(namespaceID string) (Namespace, error)
+	GetNamespace(namespaceID string) (domain.Namespace, error)
 	AddNamespace(namespace domain.Namespace) error
 	// UpdateNamespace(namespace Namespace) error
 	// RemoveNamespace(namespace Namespace) (Namespace, error)
@@ -65,7 +65,7 @@ func (repo *NamespaceRepositoryImpl) GetNamespacesByType(nsType string) ([]domai
 	return namespaces, nil
 }
 
-func (repo *NamespaceRepositoryImpl) GetNamespaceByID(namespaceID string) (domain.Namespace, error) {
+func (repo *NamespaceRepositoryImpl) GetNamespace(namespaceID string) (domain.Namespace, error) {
 	var namespace domain.Namespace
 	err := repo.datastore.ReadByID(namespaceID, &namespace)
 	if err != nil {

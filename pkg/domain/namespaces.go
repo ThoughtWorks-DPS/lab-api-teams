@@ -31,8 +31,6 @@ type Namespace struct {
 	NamespaceFromDefault bool   `json:"namespaceFromDefault"`
 }
 
-
-
 // TODO the below functions (and other business logic specific api calls) will move to service layer
 // GetNamespacesMaster() ([]Namespace, error)
 // GetNamespacesStandard() ([]Namespace, error)

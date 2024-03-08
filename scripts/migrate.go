@@ -11,8 +11,8 @@ import (
 // run this go program
 func main() {
 	ds_tm := datastore.NewGormDatastore("team")
-	ds_ns := datastore.NewGormDatastore("namespaces")
-	// ds_gw := datastore.NewGormDatastore("gateways")
+	ds_ns := datastore.NewGormDatastore("namespace")
+	// ds_gw := datastore.NewGormDatastore("gateway")
 
 	if migrator, ok := ds_tm.(datastore.Migratable); ok {
 		err := migrator.Migrate(&domain.Team{})

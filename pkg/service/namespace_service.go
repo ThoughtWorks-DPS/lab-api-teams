@@ -5,11 +5,14 @@ import (
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/repository"
 )
 
-const NAMESACE_TYPE_MASTER = "master"
-const NAMESPACE_TYPE_STANDARD = "standard"
-const NAMESACE_TYPE_CUSTOM = "custom"
+const (
+	NAMESACE_TYPE_MASTER    = "master"
+	NAMESPACE_TYPE_STANDARD = "standard"
+	NAMESACE_TYPE_CUSTOM    = "custom"
+)
 
 type NamespaceService interface {
+	GetNamespace(namespaceID string) (*domain.Namespace, error)
 	GetNamespaces() ([]domain.Namespace, error)
 	AddNamespace(ns domain.Namespace) error
 	GetNamespacesMaster() ([]domain.Namespace, error)
@@ -28,9 +31,16 @@ func NewNamespaceService(repo repository.NamespaceRepository) NamespaceService {
 	}
 }
 
+func (s *namespaceServiceImpl) GetNamespace(namespaceID string) (*domain.Namespace, error) {
+	namespace, err := s.repo.GetNamespace(namespaceID)
+	if err != nil {
+		return nil, NewResourceNotExistError()
+	}
+	return &namespace, nil
+}
+
 func (s *namespaceServiceImpl) GetNamespaces() ([]domain.Namespace, error) {
 	namespaces, err := s.repo.GetNamespaces()
-
 	if err != nil {
 		return nil, err
 	}
@@ -39,17 +49,15 @@ func (s *namespaceServiceImpl) GetNamespaces() ([]domain.Namespace, error) {
 }
 
 func (s *namespaceServiceImpl) GetNamespacesByFilterWithPagination(query Query) (*ListNamespaceResponse, error) {
-
 	if query.Page < 1 {
 		return nil, NewInvalidPageError()
 	}
 
 	if query.MaxResults < -1 || query.MaxResults == 0 || query.MaxResults > MAX_RESULTS {
-		return nil, &InvalidPageError{"maxResults value is invalid"}
+		return nil, InvalidMaxResultsError{"maxResults value is invalid"}
 	}
 
 	namespaces, err := s.repo.GetNamespacesByFilterWithPagination(query.Filters, query.Page, query.MaxResults)
-
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +67,6 @@ func (s *namespaceServiceImpl) GetNamespacesByFilterWithPagination(query Query) 
 		Page:       query.Page,
 		MaxResults: query.MaxResults,
 	}, nil
-
 }
 
 func (s *namespaceServiceImpl) GetNamespacesStandard() ([]domain.Namespace, error) {
@@ -90,6 +97,9 @@ func (s *namespaceServiceImpl) GetNamespacesMaster() ([]domain.Namespace, error)
 }
 
 func (s *namespaceServiceImpl) AddNamespace(namespace domain.Namespace) error {
+	if ns, _ := s.repo.GetNamespace(namespace.NamespaceID); ns.NamespaceID != "" {
+		return NewResourceAlreadyExistError()
+	}
 	if err := s.repo.AddNamespace(namespace); err != nil {
 		return err
 	}

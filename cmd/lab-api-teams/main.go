@@ -10,9 +10,11 @@ import (
 
 func main() {
 	router := gin.Default()
+  router.Use(handler.ErrorHandler())
+
 	ds_tm := datastore.NewGormDatastore("team")
-	ds_ns := datastore.NewGormDatastore("namespaces")
-	// ds_gw := datastore.NewGormDatastore("gateways")
+	ds_ns := datastore.NewGormDatastore("namespace")
+	// ds_gw := datastore.NewGormDatastore("gateway")
 
 	// You can choose to run migrations prior to server startup.
 	//    Be warned, this can be very slow and the k8s probes are not tuned to wait,
@@ -50,6 +52,7 @@ func main() {
 	router.POST("/teams", teamHandler.AddTeam)
 	router.DELETE("/teams/:teamID", teamHandler.RemoveTeam)
 	router.DELETE("/teams/:teamID/confirm", teamHandler.ConfirmRemoveTeam)
+	router.GET("/namespaces/:namespaceID", namespaceHandler.GetNamespace)
 	router.GET("/namespaces", namespaceHandler.GetNamespaces)
 	router.GET("/namespaces/master", namespaceHandler.GetNamespacesMaster)
 	router.GET("/namespaces/standard", namespaceHandler.GetNamespacesStandard)

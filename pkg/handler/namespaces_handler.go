@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
@@ -18,10 +17,19 @@ func NewNamespaceHandler(namespaceService service.NamespaceService) *NamespaceHa
 	return &NamespaceHandler{namespaceService: namespaceService}
 }
 
-func (handler *NamespaceHandler) GetNamespaces(c *gin.Context) {
+func (handler *NamespaceHandler) GetNamespace(c *gin.Context) {
+	namespaceID := c.Param("namespaceID")
+	namespace, err := handler.namespaceService.GetNamespace(namespaceID)
+	if err != nil {
+    _ = c.AbortWithError(-1, err)
+		return
+	}
+	c.IndentedJSON(http.StatusOK, namespace)
+}
 
+func (handler *NamespaceHandler) GetNamespaces(c *gin.Context) {
 	namespaceQuery := service.Query{
-		Page:       1,  // should set page to 0 if page is not provided
+		Page:       1,  // should set page to 1 if page is not provided
 		MaxResults: 25, // should set maxResults to 25 if maxResults is not provided
 	}
 
@@ -49,7 +57,6 @@ func (handler *NamespaceHandler) GetNamespaces(c *gin.Context) {
 	mapResult, exist := c.GetQuery("maxResults")
 	if exist {
 		mapResultInt, err := strconv.Atoi(mapResult)
-
 		if err != nil {
 			// should return 400 if maxResults value is not a integer
 			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid maxResults value"})
@@ -62,9 +69,9 @@ func (handler *NamespaceHandler) GetNamespaces(c *gin.Context) {
 	}
 
 	resp, err := handler.namespaceService.GetNamespacesByFilterWithPagination(namespaceQuery)
-
 	if err != nil {
-		log.Fatalf("Failed to call GetNamespaces %v", err)
+		_ = c.AbortWithError(-1, err)
+		return
 	}
 
 	c.IndentedJSON(http.StatusOK, resp)
@@ -74,13 +81,14 @@ func (handler *NamespaceHandler) AddNamespace(c *gin.Context) {
 	var newNamespace domain.Namespace
 
 	if err := c.BindJSON(&newNamespace); err != nil {
-		log.Printf("error %+v", err)
+		_ = c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
 	err := handler.namespaceService.AddNamespace(newNamespace)
 	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, err)
+		_ = c.AbortWithError(-1, err)
+		return
 	}
 
 	c.IndentedJSON(http.StatusCreated, newNamespace)
@@ -88,9 +96,9 @@ func (handler *NamespaceHandler) AddNamespace(c *gin.Context) {
 
 func (handler *NamespaceHandler) GetNamespacesMaster(c *gin.Context) {
 	namespaces, err := handler.namespaceService.GetNamespacesMaster()
-
 	if err != nil {
-		log.Fatalf("Failed to call get namespaces master: %v", err)
+		_ = c.AbortWithError(-1, err)
+		return
 	}
 
 	c.IndentedJSON(http.StatusOK, namespaces)
@@ -98,9 +106,9 @@ func (handler *NamespaceHandler) GetNamespacesMaster(c *gin.Context) {
 
 func (handler *NamespaceHandler) GetNamespacesStandard(c *gin.Context) {
 	namespaces, err := handler.namespaceService.GetNamespacesStandard()
-
 	if err != nil {
-		log.Fatalf("Failed to call get namespaces master: %v", err)
+		_ = c.AbortWithError(-1, err)
+		return
 	}
 
 	c.IndentedJSON(http.StatusOK, namespaces)
@@ -108,9 +116,9 @@ func (handler *NamespaceHandler) GetNamespacesStandard(c *gin.Context) {
 
 func (handler *NamespaceHandler) GetNamespacesCustom(c *gin.Context) {
 	namespaces, err := handler.namespaceService.GetNamespacesCustom()
-
 	if err != nil {
-		log.Fatalf("Failed to call get namespaces master: %v", err)
+		_ = c.AbortWithError(-1, err)
+		return
 	}
 
 	c.IndentedJSON(http.StatusOK, namespaces)
