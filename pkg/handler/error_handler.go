@@ -12,6 +12,10 @@ func ErrorHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Next()
 
+		if len(c.Errors) < 1 {
+			return
+		}
+
 		err := c.Errors[0].Err
 
 		errorResponseBody := NewErrorResponseBody(getErrorCode(err), err.Error())

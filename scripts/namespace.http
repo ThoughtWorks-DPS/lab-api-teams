@@ -26,7 +26,11 @@ GET http://localhost:8080/namespaces HTTP/1.1
 content-type: application/json
 
 ### List namespaces by team ID
-GET http://localhost:8080/namespaces?filters[namespace_team_id]=team-sapphire
+GET http://localhost:8080/namespaces?filters[namespace_team_id]=team-sapphire&filters[namespace_type]=standard
+content-type: application/json
+
+### List namespaces by team ID and standard type
+GET http://localhost:8080/namespaces?filters[namespace_team_id]=team-sapphire&filters[namespace_type]=standard
 content-type: application/json
 
 ### List namespaces by standard type
