@@ -11,12 +11,13 @@ import (
 func ErrorHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Next()
+
 		err := c.Errors[0].Err
-		errorResponseBody := NewErrorResponseBody("Error happens. ", ErrorItem{Title: reflect.TypeOf(err).Name(), Message: err.Error()})
+
+		errorResponseBody := NewErrorResponseBody(getErrorCode(err), err.Error())
+
 		switch err.(type) {
-		case *service.InvalidPageError:
-			c.IndentedJSON(http.StatusBadRequest, errorResponseBody)
-		case *service.InvalidMaxResultsError:
+		case *service.InvalidPageError, *service.InvalidMaxResultsError:
 			c.IndentedJSON(http.StatusBadRequest, errorResponseBody)
 		case *service.ResourceAlreadyExistError:
 			c.IndentedJSON(http.StatusConflict, errorResponseBody)
@@ -28,18 +29,23 @@ func ErrorHandler() gin.HandlerFunc {
 	}
 }
 
-type ErrorItem struct {
-	Title   string
-	Message string
+func getErrorCode(err error) string {
+	errorType := reflect.TypeOf(err)
+	if errorType.Kind() == reflect.Ptr {
+		return errorType.Elem().Name()
+	} else {
+		return errorType.Name()
+	}
 }
 
 type ErrorResponseBody struct {
+	Code        string
 	Description string
-	Errors      []ErrorItem
 }
 
-func NewErrorResponseBody(desc string, errorItem ...ErrorItem) ErrorResponseBody {
-	result := ErrorResponseBody{Description: desc}
-	result.Errors = append(result.Errors, errorItem...)
-	return result
+func NewErrorResponseBody(code string, desc string) ErrorResponseBody {
+	return ErrorResponseBody{
+		Code:        code,
+		Description: desc,
+	}
 }

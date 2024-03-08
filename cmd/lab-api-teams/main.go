@@ -10,7 +10,7 @@ import (
 
 func main() {
 	router := gin.Default()
-  router.Use(handler.ErrorHandler())
+	router.Use(handler.ErrorHandler())
 
 	ds_tm := datastore.NewGormDatastore("team")
 	ds_ns := datastore.NewGormDatastore("namespace")

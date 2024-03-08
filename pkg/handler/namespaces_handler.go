@@ -21,7 +21,7 @@ func (handler *NamespaceHandler) GetNamespace(c *gin.Context) {
 	namespaceID := c.Param("namespaceID")
 	namespace, err := handler.namespaceService.GetNamespace(namespaceID)
 	if err != nil {
-    _ = c.AbortWithError(-1, err)
+		_ = c.AbortWithError(-1, err)
 		return
 	}
 	c.IndentedJSON(http.StatusOK, namespace)

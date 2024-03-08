@@ -12,7 +12,6 @@ func (e InvalidPageError) Error() string {
 	return e.message
 }
 
-
 type InvalidMaxResultsError struct {
 	message string
 }
@@ -25,19 +24,17 @@ func NewInvalidMaxResultsError() error {
 	return InvalidMaxResultsError{"maxResults value is invalid"}
 }
 
-
 type ResourceNotExistError struct {
 	message string
 }
+
 func NewResourceNotExistError() error {
 	return ResourceNotExistError{"Resource not exists"}
 }
 
-
 func (e ResourceNotExistError) Error() string {
 	return e.message
 }
-
 
 type ResourceAlreadyExistError struct {
 	message string
