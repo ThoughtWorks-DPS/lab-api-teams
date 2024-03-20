@@ -33,6 +33,10 @@ Links:
     -p $PORT:5432 \
     postgres
     ```
+    or with docker compose:
+    ```bash
+    docker compose up -d
+    ```
 - Optional: Confirm db connectivity
    - Install psql client (if you do not have one yet) and add to PATH:
      - `brew install libpq`
