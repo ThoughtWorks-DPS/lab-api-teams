@@ -21,3 +21,4 @@ semver
 yugabyte/*.yaml
 
 gorm.db
+.idea

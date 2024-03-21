@@ -13,7 +13,7 @@ import (
 	"github.com/gavv/httpexpect/v2"
 )
 
-func TestE2EYourAPI(t *testing.T) {
+func TestE2EHealthProbe(t *testing.T) {
 
 	// Get API URL from environment variable or use default
 	apiURL := os.Getenv("TEAMS_API_URL")
@@ -39,11 +39,5 @@ func TestE2EYourAPI(t *testing.T) {
 		Expect().
 		Status(http.StatusOK).
 		JSON().Object().HasValue("message", "DB is available")
-
-	// TODO
-	// Get teams
-	// Post team
-	// Delete team
-	// PUT team
 
 }

@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+
+  db:
+    container_name: teams-api-db
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: gorm
+      POSTGRES_USER: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - 5433:5432
