@@ -38,6 +38,8 @@ spec:
               value: {{ .Values.image.tag }}
             - name: DATABASE_URL
               value: {{ .Values.database.url }}
+            - name: DATABASE_PORT
+              value: { { .Values.database.port } }
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           livenessProbe:

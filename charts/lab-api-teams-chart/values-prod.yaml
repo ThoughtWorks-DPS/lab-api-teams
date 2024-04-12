@@ -10,6 +10,7 @@ virtualService:
 
 database:
   url: "yb-tservers.twdps-core-labs-team-prod.svc.cluster.local"
+  port: 5433
 
 image:
   pullPolicy: Always

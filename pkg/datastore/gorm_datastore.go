@@ -34,8 +34,8 @@ func NewGormDatastore(domain string) GormDatastore {
 			domain: domain,
 		}
 	default:
-		host := os.Getenv("DATABASE_URL")
-		dsn := fmt.Sprintf("host=%s user=postgres dbname=gorm port=5433 sslmode=disable TimeZone=UTC", host)
+		host, port := os.Getenv("DATABASE_URL"), os.Getenv("DATABASE_PORT")
+		dsn := fmt.Sprintf("host=%s user=postgres dbname=gorm port=%s sslmode=disable TimeZone=UTC", host, port)
 		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err != nil {
 			panic("failed to connect database")

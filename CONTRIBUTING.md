@@ -47,8 +47,16 @@ Links:
 - Continue to "Bootstrap database" below
 
 ##### Bootstrap database
+
+###### Docker compose
+- `docker compose up -d` should automatically create the database and run migration container
+- 
+###### Manual boostrap
+If you need to manually run migrations, you can do so by running the following commands:
 - `export DATABASE_URL="localhost"`
-- Migration script to create initial schemas: `go run ./scripts/migrate.go`
+- `export DATABASE_PORT="5433"`
+- Migration script to create initial schemas: `go run cmd/migrate`
+
 
 ##### Starting teams API
 Running the teams api (TODO: update makefile)
