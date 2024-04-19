@@ -101,7 +101,7 @@ commands:
 executors:
   amd64:
     machine:
-      image: ubuntu-2204:2023.07.2
+      image: ubuntu-2204:2024.01.2
   arm64:
     machine:
       image: ubuntu-2004:2022.04.1
