@@ -1,19 +1,17 @@
 #!/usr/bin/env bash
 set -e
 
-# Note: You will only be able to use this script when you have 3 AZs in your cluster.
-#  Meaning you must have at least one node in each AZ (a, b, c).
-
 export AWS_DEFAULT_REGION=$1
 export NAMESPACE=$2
+export ENV=${3:-prod}
 
 cat <<EOF > yugabyte/yugabyte.yaml
 enableLoadBalancer: False
 storage:
   master:
-    storageClass: "prod-${AWS_DEFAULT_REGION}-ebs-storage-class"
+    storageClass: "${ENV}-${AWS_DEFAULT_REGION}-ebs-storage-class"
   tserver:
-    storageClass: "prod-${AWS_DEFAULT_REGION}-ebs-storage-class"
+    storageClass: "${ENV}-${AWS_DEFAULT_REGION}-ebs-storage-class"
 replicas:
   master: 1
   tserver: 1
@@ -53,4 +51,3 @@ helm upgrade --install yugabyte yugabytedb/yugabyte \
 #     placement_region: "${AWS_DEFAULT_REGION}"
 #     placement_zone: "${AWS_DEFAULT_REGION}a"
 
-kubectl exec -n ${NAMESPACE} -it yb-tserver-0 -- ysqlsh  -c 'SELECT 'CREATE DATABASE gorm' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'gorm')\gexec' 

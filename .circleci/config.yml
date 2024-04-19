@@ -135,7 +135,6 @@ jobs:
       - image: *executor-image
     steps:
       - checkout
-      - setup_remote_docker
       - set-environment:
           cluster: << parameters.cluster >>
           source-env: << parameters.source-env >>
@@ -143,7 +142,10 @@ jobs:
           cluster: << parameters.cluster >>
       - run:
           name: deploy yugabyte
-          command: bash scripts/yuga-single-az.sh << parameters.region>> << parameters.namespace >>
+          command: bash scripts/yuga-single-az.sh << parameters.region>> << parameters.namespace >> prod
+      - run:
+          name: create db
+          command: bash scripts/create-gorm-db.sh << parameters.namespace >>
 
   golang-static:
     executor: docker-golang-executor
