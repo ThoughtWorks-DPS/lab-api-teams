@@ -222,7 +222,7 @@ jobs:
             curl -sL https://git.io/goreleaser | bash
       - run: 
           name: validate signature
-          command: cosign verify -key cosign.pub twdps/lab-api-teams
+          command: cosign verify --key cosign.pub twdps/lab-api-teams
       - do/prune-dockerhub:
           repository: twdps/lab-api-teams
           tag-filter: dev
