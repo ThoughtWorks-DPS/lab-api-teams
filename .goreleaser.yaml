@@ -10,42 +10,93 @@ builds:
       - arm64
     goarm:
       - "8"
+    binary: lab-api-teams
     main: ./cmd/lab-api-teams
+  - env: [ CGO_ENABLED=0 ]
+    id: lab-api-teams-migrate
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    goarm:
+      - "8"
+    binary: migrate
+    main: ./cmd/migrate
 
 dockers:
-- goos: linux
-  goarch: amd64
-  use: buildx
-  dockerfile: Dockerfile
-  image_templates:
-    - "docker.io/twdps/{{ .ProjectName }}:{{ .Version }}-linux-amd64"
-    - "docker.io/twdps/{{ .ProjectName }}:latest-linux-amd64"
-  build_flag_templates:
-    - --platform=linux/amd64
-    - --label=org.opencontainers.image.title={{ .ProjectName }}
-    - --label=org.opencontainers.image.description={{ .ProjectName }}
-    - --label=org.opencontainers.image.url=https://github.com/ThoughtWorks-DPS/{{ .ProjectName }}
-    - --label=org.opencontainers.image.source=https://github.com/ThoughtWorks-DPS/{{ .ProjectName }}
-    - --label=org.opencontainers.image.version={{ .Version }}
-    - --label=org.opencontainers.image.revision={{ .FullCommit }}
-    - --label=org.opencontainers.image.licenses=MIT
-
-- goos: linux
-  goarch: arm64
-  use: buildx
-  dockerfile: Dockerfile
-  image_templates:
-    - "docker.io/twdps/{{ .ProjectName }}:{{ .Version }}-linux-arm64"
-    - "docker.io/twdps/{{ .ProjectName }}:latest-linux-arm64"
-  build_flag_templates:
-    - --platform=linux/arm64/v8
-    - --label=org.opencontainers.image.title={{ .ProjectName }}
-    - --label=org.opencontainers.image.description={{ .ProjectName }}
-    - --label=org.opencontainers.image.url=https://github.com/ThoughtWorks-DPS/{{ .ProjectName }}
-    - --label=org.opencontainers.image.source=https://github.com/ThoughtWorks-DPS/{{ .ProjectName }}
-    - --label=org.opencontainers.image.version={{ .Version }}
-    - --label=org.opencontainers.image.revision={{ .FullCommit }}
-    - --label=org.opencontainers.image.licenses=MIT
+  - goos: linux
+    goarch: amd64
+    use: buildx
+    dockerfile: Dockerfile
+    ids:
+      - lab-api-teams
+    image_templates:
+      - "docker.io/twdps/{{ .ProjectName }}:{{ .Version }}-linux-amd64"
+      - "docker.io/twdps/{{ .ProjectName }}:latest-linux-amd64"
+    build_flag_templates:
+      - --platform=linux/amd64
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.description={{ .ProjectName }}
+      - --label=org.opencontainers.image.url=https://github.com/ThoughtWorks-DPS/{{ .ProjectName }}
+      - --label=org.opencontainers.image.source=https://github.com/ThoughtWorks-DPS/{{ .ProjectName }}
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.licenses=MIT
+  - goos: linux
+    goarch: arm64
+    use: buildx
+    dockerfile: Dockerfile
+    ids:
+      - lab-api-teams
+    image_templates:
+      - "docker.io/twdps/{{ .ProjectName }}:{{ .Version }}-linux-arm64"
+      - "docker.io/twdps/{{ .ProjectName }}:latest-linux-arm64"
+    build_flag_templates:
+      - --platform=linux/arm64/v8
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.description={{ .ProjectName }}
+      - --label=org.opencontainers.image.url=https://github.com/ThoughtWorks-DPS/{{ .ProjectName }}
+      - --label=org.opencontainers.image.source=https://github.com/ThoughtWorks-DPS/{{ .ProjectName }}
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.licenses=MIT
+  - goos: linux
+    goarch: arm64
+    use: buildx
+    dockerfile: Dockerfile.migrate
+    ids:
+      - lab-api-teams-migrate
+    image_templates:
+      - "docker.io/twdps/{{ .ProjectName }}-migrate:{{ .Version }}-linux-arm64"
+      - "docker.io/twdps/{{ .ProjectName }}-migrate:latest-linux-arm64"
+    build_flag_templates:
+      - --platform=linux/arm64/v8
+      - --label=org.opencontainers.image.title={{ .ProjectName }}-migrate
+      - --label=org.opencontainers.image.description={{ .ProjectName }}-migrate
+      - --label=org.opencontainers.image.url=https://github.com/ThoughtWorks-DPS/{{ .ProjectName }}
+      - --label=org.opencontainers.image.source=https://github.com/ThoughtWorks-DPS/{{ .ProjectName }}
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.licenses=MIT
+  - goos: linux
+    goarch: amd64
+    use: buildx
+    dockerfile: Dockerfile.migrate
+    ids:
+      - lab-api-teams-migrate
+    image_templates:
+      - "docker.io/twdps/{{ .ProjectName }}-migrate:{{ .Version }}-linux-amd64"
+      - "docker.io/twdps/{{ .ProjectName }}-migrate:latest-linux-amd64"
+    build_flag_templates:
+      - --platform=linux/amd64
+      - --label=org.opencontainers.image.title={{ .ProjectName }}-migrate
+      - --label=org.opencontainers.image.description={{ .ProjectName }}
+      - --label=org.opencontainers.image.url=https://github.com/ThoughtWorks-DPS/{{ .ProjectName }}
+      - --label=org.opencontainers.image.source=https://github.com/ThoughtWorks-DPS/{{ .ProjectName }}
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.licenses=MIT
 
 docker_manifests:
   - name_template: docker.io/twdps/{{ .ProjectName }}:v{{ .Version }}
@@ -56,6 +107,14 @@ docker_manifests:
     image_templates:
     - docker.io/twdps/{{ .ProjectName }}:latest-linux-amd64
     - docker.io/twdps/{{ .ProjectName }}:latest-linux-arm64
+  - name_template: docker.io/twdps/{{ .ProjectName }}-migrate:v{{ .Version }}
+    image_templates:
+      - docker.io/twdps/{{ .ProjectName }}-migrate:{{ .Version }}-linux-amd64
+      - docker.io/twdps/{{ .ProjectName }}-migrate:{{ .Version }}-linux-arm64
+  - name_template: docker.io/twdps/{{ .ProjectName }}-migrate:latest
+    image_templates:
+      - docker.io/twdps/{{ .ProjectName }}-migrate:latest-linux-amd64
+      - docker.io/twdps/{{ .ProjectName }}-migrate:latest-linux-arm64
 
 docker_signs:
   - cmd: cosign

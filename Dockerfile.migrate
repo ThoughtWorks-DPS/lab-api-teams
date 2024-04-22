@@ -1,11 +1,6 @@
-FROM golang:1.20 as builder
-WORKDIR /app
-COPY go.mod go.sum ./
-RUN go mod download
-COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o /migrate ./cmd/migrate
-
-FROM gcr.io/distroless/base
+FROM gcr.io/distroless/static:nonroot
 WORKDIR /
-COPY --from=builder /migrate .
+COPY ./migrate ./migrate
+USER 65532:65532
+
 CMD ["./migrate"]
