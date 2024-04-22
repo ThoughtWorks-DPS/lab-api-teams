@@ -2,6 +2,7 @@ project_name: lab-api-teams
 
 builds:
   - env: [CGO_ENABLED=0]
+    id: lab-api-teams
     goos:
       - linux
     goarch:
@@ -61,3 +62,9 @@ docker_signs:
     stdin: '{{ .Env.COSIGN_PWD }}'
     args: ["sign", "--key=cosign.key", "${artifact}"]
     artifacts: all
+
+archives:
+  - id: default
+    builds:
+      - lab-api-teams
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"

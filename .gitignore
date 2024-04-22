@@ -22,3 +22,4 @@ yugabyte/*.yaml
 
 gorm.db
 .idea
+dist
