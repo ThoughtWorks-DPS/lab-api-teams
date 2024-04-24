@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/datastore"
 	"github.com/ThoughtWorks-DPS/lab-api-teams/pkg/domain"
 )
@@ -10,6 +11,7 @@ import (
 // port-forward the yugabyte db
 // run this go program
 func main() {
+	fmt.Println("Running Migrations...")
 	ds_tm := datastore.NewGormDatastore("team")
 	ds_ns := datastore.NewGormDatastore("namespace")
 

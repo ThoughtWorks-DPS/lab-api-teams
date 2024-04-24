@@ -56,6 +56,15 @@ build:
 	chmod +x $(OUTPUT_DIR)/$(OUTPUT_BIN)
 	docker build -t docker.io/twdps/lab-api-teams:$(REVISION) .
 
+.PHONEY: run
+run:
+	go mod tidy
+	DATABASE_URL="localhost" DATABASE_PORT="5433" go run ./cmd/lab-api-teams
+
+.PHONY: migrate
+migrate:
+	DATABASE_URL="localhost" DATABASE_PORT="5433" go run ./cmd/migrate
+
 .PHONY: push
 push:
 	docker push docker.io/twdps/lab-api-teams:$(REVISION)

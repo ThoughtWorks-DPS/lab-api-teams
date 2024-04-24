@@ -15,24 +15,5 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    networks:
-      - teams-api-network
     ports:
       - 5433:5432
-
-  migrate:
-    build:
-      context: .
-      dockerfile: Dockerfile.migrate
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      DATABASE_URL: db
-      DATABASE_PORT: 5432
-    networks:
-      - teams-api-network
-
-networks:
-  teams-api-network:
-    driver: bridge

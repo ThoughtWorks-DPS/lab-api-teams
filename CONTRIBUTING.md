@@ -49,25 +49,28 @@ Links:
 ##### Bootstrap database
 
 ###### Docker compose
-- `docker compose up -d` should automatically create the database and run migration container
-- 
-###### Manual boostrap
-If you need to manually run migrations, you can do so by running the following commands:
-- `export DATABASE_URL="localhost"`
-- `export DATABASE_PORT="5433"`
-- Migration script to create initial schemas: `go run cmd/migrate`
+- `docker compose up -d` will run a postgres container locally
 
+###### Manual boostrap
+
+If you need to manually run migrations, you can do so by running:
+
+```bash
+make migrate
+```
 
 ##### Starting teams API
-Running the teams api (TODO: update makefile)
+Running the teams api
+```bash
+make run
 ```
-go get ./...
-go run cmd/lab-api-teams/main.go
-```
+
+##### Testing by adding some records
+Try using the `.http` files in the `./test` folder to add some records to the database.
 
 ##### Linting
 To run fmt, lint, test in one command
-```
+```bash
 make static
 ```
 
