@@ -8,6 +8,9 @@ metadata:
     "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
     spec:
       containers:
         - name: migrate
