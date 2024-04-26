@@ -51,9 +51,15 @@ Links:
 ###### Docker compose
 - `docker compose up -d` will run a postgres container locally
 
-###### Manual boostrap
+###### Migrations
 
-If you need to manually run migrations, you can do so by running:
+Migrations are currently run using GORM's [auto-migration feature](https://gorm.io/docs/migration.html).
+There is a separate binary `cmd/migrate` that can be used to run migrations.
+In the deployed environment, a Kubernetes job will run migrations prior to
+the `helm upgrade` via a helm pre-install hook, updating the schema prior to new instances of
+the application being deployed.
+
+When running a database locally, you may need to manually run migrations by running:
 
 ```bash
 make migrate
