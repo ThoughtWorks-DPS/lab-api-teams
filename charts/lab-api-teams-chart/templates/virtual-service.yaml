@@ -15,7 +15,11 @@ spec:
     - name: {{ include "lab-api-teams.fullname" . }}-route
       match:
         - uri:
-            prefix: {{ .Values.virtualService.matchUrl }}
+            prefix: "/teams-api/v1/"
+        - uri:
+            prefix: "/teams-api/v1"
+      rewrite:
+        uri: "/"
       route:
       - destination:
           host: {{ include "lab-api-teams.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local

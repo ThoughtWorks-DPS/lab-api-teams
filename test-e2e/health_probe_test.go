@@ -20,7 +20,7 @@ func TestE2EHealthProbe(t *testing.T) {
 
 	if strings.Contains(apiURL, "prod") {
 		t.Log(fmt.Sprintf("Using prod api url: %s", apiURL))
-		apiURL = "https://twdps.io"
+		apiURL = "https://twdps.io/teams-api/v1/"
 	} else if apiURL == "" {
 		t.Log("Using local api url")
 		apiURL = "http://localhost:8080" // default value
