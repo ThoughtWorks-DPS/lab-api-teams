@@ -26,7 +26,7 @@ func (handler *TeamHandler) Liveness(c *gin.Context) {
 // TODO - given that we implement many different database types, the database available function
 //
 //	       should return a string or object wsith the type in it, like { type: redis, conn_url: localhost:6379, available: true }
-//					This is good info for error logs when debugging (Database %s is not available yet, db.Type)
+//				This is good info for error logs when debugging (Database %s is not available yet, db.Type)
 func (handler *TeamHandler) Readiness(c *gin.Context) {
 	dbReady, err := handler.teamService.DatabaseAvailable()
 	if err != nil {
